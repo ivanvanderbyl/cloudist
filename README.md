@@ -48,6 +48,17 @@ In your application:
       }
     }
 
+Acknowledgements
+-------
+
+Portions of this gem are based on code from the following projects:
+
+- Heroku's Droid gem
+- Lizzy
+- Minion
+- Nanite
+- Smith
+
 Contributing to Cloudist
 ------------------------
 
