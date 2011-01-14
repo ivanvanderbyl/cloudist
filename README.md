@@ -36,6 +36,8 @@ Or if your app has a Gemfile:
 Usage
 -----
 
+In your worker:
+
     Cloudist.worker {
       job('make.sandwich') {
         # Make sandwich here
@@ -45,6 +47,8 @@ Usage
       }
     }
     
+In your application:
+
     job = Cloudist.enqueue('make.sandwich', :bread => "white", :sauce => 'bbq')
     
     Cloudist.listen(job) {
