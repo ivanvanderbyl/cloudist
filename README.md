@@ -23,6 +23,36 @@ Contributing to Cloudist
 * Make sure to add tests for it. This is important so I don't break it in a future version unintentionally.
 * Please try not to mess with the Rakefile, version, or history. If you want to have your own version, or is otherwise necessary, that is fine, but please isolate to its own commit so I can cherry-pick around it.
 
+Installation
+------------
+
+    gem install cloudist
+    
+
+Or if your app has a Gemfile:
+    
+    gem 'cloudist'
+
+Usage
+-----
+
+    Cloudist.worker {
+      job('make.sandwich') {
+        # Make sandwich here
+        
+        # Fire the finished event
+        finished!
+      }
+    }
+    
+    job = Cloudist.enqueue('make.sandwich', :bread => "white", :sauce => 'bbq')
+    
+    Cloudist.listen(job) {
+      event('finished') {
+        # Called when we finish making a sandwich
+      }
+    }
+    
 Copyright
 ---------
 
