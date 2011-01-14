@@ -42,6 +42,9 @@ In your worker:
       job('make.sandwich') {
         # Make sandwich here
         
+        # Your worker has access to the data sent from the server in the 'data' attribute
+        data # => {:bread => "white", :sauce => 'bbq'}
+        
         # Fire the finished event
         finished!
       }
