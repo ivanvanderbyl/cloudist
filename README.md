@@ -9,8 +9,8 @@ or even just sending emails. Unlike other job queues (DelayedJob etc) Cloudist d
 expects all the data your worker requires to be sent in the initial job request. This means your workers stay slim and can scale very quickly and even run on EC2 micros outside your applications
 network without any further configuration.
 
-Another way Cloudist differs from other AMQP based message queues like Minion is it allows workers to report events, logs, system stats and replies back to the application which distributed the
-job. And unlike database based job queues, there is almost no delay between messages, except network latency of course.
+Another way Cloudist differs from other AMQP based job queues like Minion is it allows workers to report events, logs, system stats and replies back to the application which distributed the
+job, and unlike database based job queues, there is almost no delay between messages, except network latency of course.
 
 Installation
 ------------
