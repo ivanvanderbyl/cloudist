@@ -12,22 +12,10 @@ network without any further configuration.
 Another way Cloudist differs from other AMQP based message queues like Minion is it allows workers to report events, logs, system stats and replies back to the application which distributed the
 job. And unlike database based job queues, there is almost no delay between messages, except network latency of course.
 
-Contributing to Cloudist
-------------------------
- 
-* Check out the latest master to make sure the feature hasn't been implemented or the bug hasn't been fixed yet
-* Check out the issue tracker to make sure someone already hasn't requested it and/or contributed it
-* Fork the project
-* Start a feature/bugfix branch
-* Commit and push until you are happy with your contribution
-* Make sure to add tests for it. This is important so I don't break it in a future version unintentionally.
-* Please try not to mess with the Rakefile, version, or history. If you want to have your own version, or is otherwise necessary, that is fine, but please isolate to its own commit so I can cherry-pick around it.
-
 Installation
 ------------
 
     gem install cloudist
-    
 
 Or if your app has a Gemfile:
     
@@ -59,6 +47,17 @@ In your application:
         # Called when we finish making a sandwich
       }
     }
+
+Contributing to Cloudist
+------------------------
+
+* Check out the latest master to make sure the feature hasn't been implemented or the bug hasn't been fixed yet
+* Check out the issue tracker to make sure someone already hasn't requested it and/or contributed it
+* Fork the project
+* Start a feature/bugfix branch e.g. git checkout -b feature-my-awesome-idea or bugfix-this-does-not-work
+* Commit and push until you are happy with your contribution
+* Make sure to add tests for it. This is important so I don't break it in a future version unintentionally.
+* Please try not to mess with the Rakefile, version, or history. If you want to have your own version, or is otherwise necessary, that is fine, but please isolate to its own commit so I can cherry-pick around it.
     
 Copyright
 ---------
