@@ -41,12 +41,12 @@ describe Cloudist::Payload do
   
   it "should parse JSON message" do
     payload = Cloudist::Payload.new({:bread => 'white', :event_hash => 'foo'}.to_json)
-    payload.hash.should == {"bread" => 'white', 'event_hash' => 'foo'}
+    payload.hash.should == {"bread"=>"white"}
   end
   
   it "should parse custom headers" do
     payload = Cloudist::Payload.new({:bread => 'white', :event_hash => 'foo'}.to_json, {:published_on => 12345})
-    payload.parse_custom_headers.should == {:published_on=>12345, :ttl=>-1}
+    payload.parse_custom_headers.should == {:published_on=>12345, :event_hash=>"foo", :content_type=>"application/json", :message_id=>"foo", :ttl=>300}
   end
   
   it "should create a unique event hash" do
@@ -71,6 +71,51 @@ describe Cloudist::Payload do
     json, headers = payload.formatted
     json.should == "{\"bread\":\"white\"}"
     headers[:ttl].should == "300"
+  end
+  
+  it "should generate a unique payload ID" do
+    payload = Cloudist::Payload.new({:bread => 'white'})
+    payload.id.size.should == 32
+  end
+  
+  it "should allow setting of payload ID" do
+    payload = Cloudist::Payload.new({:bread => 'white'})
+    payload.id = "2345"
+    payload.id.should == "2345"
+  end
+  
+  it "should allow changing of payload after being published" do
+    payload = Cloudist::Payload.new({:bread => 'white'})
+    payload.publish
+    lambda { payload.id = "12334456" }.should raise_error
+  end
+  
+  it "should freeze" do
+    payload = Cloudist::Payload.new({:bread => 'white'})
+    lambda {payload.hash[:bread] = "brown"}.should_not raise_error(TypeError)
+    payload.hash[:bread].should == "brown"
+    payload.publish
+    lambda {payload.hash[:bread] = "rainbow"}.should raise_error(TypeError)
+  end
+  
+  it "should allow setting of reply header" do
+    payload = Cloudist::Payload.new({:bread => 'white'})
+    
+    payload.headers[:reply_to].should be_nil
+    payload.set_reply_to("my_custom_queue")
+    payload.headers[:reply_to].should_not be_nil
+    payload.headers[:reply_to].should match /^temp\.reply\.my_custom_queue\.(.+)/
+    hash, headers = payload.formatted
+    headers[:reply_to].should == payload.headers[:reply_to]
+    
+  end
+  
+  it "should not overwrite passed in headers" do
+    payload = Cloudist::Payload.new({:bread => 'white'}, {:ttl => 25, :event_hash => 'foo', :published_on => 12345, :message_id => 1})
+    payload.headers[:ttl].should == "25"
+    payload.headers[:event_hash].should == "foo"
+    payload.headers[:published_on].should == "12345"
+    payload.headers[:message_id].should == "1"
   end
   
 end
