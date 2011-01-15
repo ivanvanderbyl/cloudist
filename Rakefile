@@ -15,8 +15,8 @@ Jeweler::Tasks.new do |gem|
   gem.name = "cloudist"
   gem.homepage = "http://github.com/ivanvanderbyl/cloudist"
   gem.license = "MIT"
-  gem.summary = %Q{TODO: one-line summary of your gem}
-  gem.description = %Q{TODO: longer description of your gem}
+  gem.summary = %Q{Super fast job queue using AMQP}
+  gem.description = %Q{Cloudist is a simple, highly scalable job queue for Ruby applications, it can run within Rails, or on EC2, and does not load your entire Rails stack like delayed job does.}
   gem.email = "ivanvanderbyl@me.com"
   gem.authors = ["Ivan Vanderbyl"]
   # Include your dependencies below. Runtime dependencies are required when using your gem,
