@@ -97,5 +97,15 @@ module Cloudist
       hash[key]
     end
     
+    def published?
+      @published == true
+    end
+    
+    def publish
+      return if published?
+      @published = true
+      freeze!
+    end
+    
   end
 end
