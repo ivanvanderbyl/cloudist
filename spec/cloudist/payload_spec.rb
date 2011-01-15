@@ -15,8 +15,8 @@ describe Cloudist::Payload do
   
   it "should prepare headers" do
     payload = Cloudist::Payload.new({:bread => 'white'})
-    hash, headers = payload.apply_custom_headers
-    hash.should == {"bread"=>"white"}
+    body, headers = payload.apply_custom_headers
+    body.should == {"bread"=>"white"}
     headers.has_key?(:ttl).should be_true
     headers.has_key?(:content_type).should be_true
     headers[:content_type].should == "application/json"
@@ -27,21 +27,21 @@ describe Cloudist::Payload do
   
   it "should extract published_on from data" do
     payload = Cloudist::Payload.new({:bread => 'white', :published_on => 12345678})
-    hash, headers = payload.apply_custom_headers
-    hash.should == {"bread"=>"white"}
+    body, headers = payload.apply_custom_headers
+    body.should == {"bread"=>"white"}
     headers[:published_on].should == "12345678"
   end
   
   it "should extract custom event hash from data" do
     payload = Cloudist::Payload.new({:bread => 'white', :event_hash => 'foo'})
-    hash, headers = payload.apply_custom_headers
-    hash.should == {"bread"=>"white"}
+    body, headers = payload.apply_custom_headers
+    body.should == {"bread"=>"white"}
     headers[:event_hash].should == "foo"
   end
   
   it "should parse JSON message" do
     payload = Cloudist::Payload.new({:bread => 'white', :event_hash => 'foo'}.to_json)
-    payload.hash.should == {"bread"=>"white"}
+    payload.body.should == {"bread"=>"white"}
   end
   
   it "should parse custom headers" do
@@ -92,10 +92,10 @@ describe Cloudist::Payload do
   
   it "should freeze" do
     payload = Cloudist::Payload.new({:bread => 'white'})
-    lambda {payload.hash[:bread] = "brown"}.should_not raise_error(TypeError)
-    payload.hash[:bread].should == "brown"
+    lambda {payload.body[:bread] = "brown"}.should_not raise_error(TypeError)
+    payload.body[:bread].should == "brown"
     payload.publish
-    lambda {payload.hash[:bread] = "rainbow"}.should raise_error(TypeError)
+    lambda {payload.body[:bread] = "rainbow"}.should raise_error(TypeError)
   end
   
   it "should allow setting of reply header" do
@@ -105,7 +105,7 @@ describe Cloudist::Payload do
     payload.set_reply_to("my_custom_queue")
     payload.headers[:reply_to].should_not be_nil
     payload.headers[:reply_to].should match /^temp\.reply\.my_custom_queue\.(.+)/
-    hash, headers = payload.formatted
+    body, headers = payload.formatted
     headers[:reply_to].should == payload.headers[:reply_to]
     
   end
@@ -116,6 +116,11 @@ describe Cloudist::Payload do
     payload.headers[:event_hash].should == "foo"
     payload.headers[:published_on].should == "12345"
     payload.headers[:message_id].should == "1"
+  end
+  
+  it "should allow custom headers to be set" do
+    payload = Cloudist::Payload.new({:bread => 'white'}, {:reply_type => 'event'})
+    payload.headers[:reply_type].should == 'event'
   end
   
 end
