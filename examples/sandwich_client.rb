@@ -2,20 +2,16 @@ $:.unshift File.dirname(__FILE__) + '/../lib'
 require "rubygems"
 require "cloudist"
 
-ENV["AMQP_URL"] = 'amqp://guest:guest@localhost:5672/'
-
-::Signal.trap('INT') { Cloudist.stop }
-::Signal.trap('TERM'){ Cloudist.stop }
+Cloudist.signal_trap!
 
 Cloudist.start {
+  
   log.info("Dispatching sandwich making job...")
+  enqueue('make.sandwich', {:bread => 'white'})
   
-  job = enqueue('make.sandwich', {:bread => 'brown'})
-  log.debug(job.inspect)
-  
-  listen(job) {
-    
+  # Listen to all sandwich jobs
+  listen('make.sandwich') {
+    Cloudist.log.info("Make sandwich event: #{id}")
   }
-  
   
 }
