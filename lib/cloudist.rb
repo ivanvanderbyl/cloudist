@@ -1,7 +1,5 @@
 require 'uri'
-if !defined?(JSON) && !defined?(JSON_LOADED)
-	require 'json/pure'
-end
+require 'json'
 require "active_support/hash_with_indifferent_access"
 require "amqp"
 require "mq"
