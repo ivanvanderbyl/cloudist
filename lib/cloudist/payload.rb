@@ -36,8 +36,8 @@ module Cloudist
     end
     
     def freeze!
-      # headers.freeze
-      # hash.freeze
+      headers.freeze
+      hash.freeze
     end
     
     def update_headers
@@ -82,7 +82,11 @@ module Cloudist
     end
     
     def set_reply_to(queue_name)
-      headers[:reply_to] = "#{reply_prefix}.#{queue_name}.#{id}"
+      headers[:reply_to] = reply_name(queue_name)
+    end
+    
+    def reply_name(queue_name)
+      "#{queue_name}.#{id}"
     end
     
     def event_hash
