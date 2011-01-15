@@ -1,17 +1,20 @@
 module Cloudist
   DEFAULT_TTL = 300
-  
+
   class Payload
+    include Utils
     
     attr_accessor :hash, :headers
-    
+
     def initialize(data_hash_or_json, headers = {})
       data_hash_or_json = parse_message(data_hash_or_json) if data_hash_or_json.is_a?(String)
-      raise Cloudist::BadPayload, "Expected Hash for payload" unless data_hash_or_json.is_a?(Hash)
       
+      raise Cloudist::BadPayload, "Expected Hash for payload" unless data_hash_or_json.is_a?(Hash)
+
       @hash, @headers = HashWithIndifferentAccess.new(data_hash_or_json), headers
+      update_headers
     end
-    
+
     def formatted
       hash, headers = apply_custom_headers
 
