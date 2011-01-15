@@ -23,9 +23,20 @@ require "cloudist/job"
 module Cloudist
   class << self
     # Start the Cloudist loop
-    # Cloudist.start {
-    #   # Do stuff in here
-    # }
+    # 
+    #   Cloudist.start {
+    #     # Do stuff in here
+    #   }
+    # 
+    # == Options
+    # * :user => 'name'
+    # * :pass => 'secret'
+    # * :host => 'localhost'
+    # * :port => 5672
+    # * :vhost => /
+    # 
+    # Refer to default config below for how to set these as defaults
+    # 
     def start(options = {}, &block)
       config = settings.update(options)
       AMQP.start(config) do
@@ -34,9 +45,11 @@ module Cloudist
     end
 
     # Define a worker. Must be called inside start loop
+    # 
     # worker {
     #   job('make.sandwich') {}
     # }
+    # 
     # Refer to examples.
     def worker(options = {}, &block)
       _worker = Cloudist::Worker.new(options)
@@ -44,7 +57,7 @@ module Cloudist
       return _worker
     end
     
-    # Accepts either a queue name or a job instance returns from enqueue.
+    # Accepts either a queue name or a job instance returned from enqueue.
     # This method operates in two modes, when given a queue name, it
     # will return all responses regardless of job id so you can use the job
     # id to lookup a database record to update etc.
