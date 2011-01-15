@@ -33,16 +33,25 @@ module Cloudist
       end
     end
 
-    def worker(&block)
-
+    def worker(options = {}, &block)
+      _worker = Cloudist::Worker.new(options)
+      _worker.instance_eval(&block)
+      return _worker
     end
 
-    def listener(job, &block)
-
+    def listener(job_or_id, &block)
+      _listener = Cloudist::Listener.new(job_or_id)
+      _listener.subscribe!
+      _listener.instance_eval(&block)
+      return _listener
     end
-
-    def enqueue(job_queue_name, data)
-
+    
+    # Returns Job instance
+    # Use Job#id to reference job later on.
+    def enqueue(job_queue_name, data = nil)
+      raise EnqueueError, "Incorrect arguments, you must include data when enquing job" if data.nil?
+      # TODO: Detect if inside loop, if not use bunny sync
+      Cloudist::Publisher.enqueue(job_queue_name, data)
     end
 
     def stop_safely
