@@ -58,6 +58,10 @@ module Cloudist
       @logger ||= Logger.new($stdout)
     end
     
+    def handle_error(error)
+      log.error "#{err.class}: #{err.message}", :exception => err
+    end
+    
   end
   
 end
