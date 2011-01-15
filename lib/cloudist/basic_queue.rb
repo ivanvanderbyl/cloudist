@@ -42,14 +42,15 @@ module Cloudist
     def subscribe(amqp_opts={}, opts={})
       setup
       
-      q.subscribe(amqp_opts) do |header, message|
-        request = Factory::Request.new(self, header, message)
+      q.subscribe(amqp_opts) do |queue_header, json_encoded_message|
+        request = Cloudist::Request.new(self, json_encoded_message, queue_header)
+        
         begin
-          raise Factory::ExpiredMessage if request.expired?
+          raise Cloudist::ExpiredMessage if request.expired?
           yield request if block_given?
           finished = Time.now.utc.to_i
 
-        rescue Factory::ExpiredMessage
+        rescue Cloudist::ExpiredMessage
           log.info "amqp_message action=timeout #{tag} ttl=#{request.ttl} age=#{request.age} #{request.inspect}"
           request.ack if amqp_opts[:ack]
 
