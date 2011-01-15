@@ -1,0 +1,54 @@
+GEM
+  remote: http://rubygems.org/
+  specs:
+    amqp (0.6.7)
+      eventmachine (>= 0.12.4)
+    diff-lcs (1.1.2)
+    eventmachine (0.12.10)
+    git (1.2.5)
+    jeweler (1.5.2)
+      bundler (~> 1.0.0)
+      git (>= 1.2.5)
+      rake
+    json (1.4.6)
+    mocha (0.9.10)
+      rake
+    moqueue (0.1.4)
+      amqp
+    rake (0.8.7)
+    rcov (0.9.9)
+    reek (1.2.8)
+      ruby2ruby (~> 1.2)
+      ruby_parser (~> 2.0)
+      sexp_processor (~> 3.0)
+    roodi (2.1.0)
+      ruby_parser
+    rspec (2.3.0)
+      rspec-core (~> 2.3.0)
+      rspec-expectations (~> 2.3.0)
+      rspec-mocks (~> 2.3.0)
+    rspec-core (2.3.1)
+    rspec-expectations (2.3.0)
+      diff-lcs (~> 1.1.2)
+    rspec-mocks (2.3.0)
+    ruby2ruby (1.2.5)
+      ruby_parser (~> 2.0)
+      sexp_processor (~> 3.0)
+    ruby_parser (2.0.5)
+      sexp_processor (~> 3.0)
+    sexp_processor (3.0.5)
+
+PLATFORMS
+  ruby
+
+DEPENDENCIES
+  amqp
+  bundler (~> 1.0.0)
+  jeweler (~> 1.5.2)
+  json
+  mocha
+  moqueue
+  rcov
+  reek (~> 1.2.8)
+  roodi (~> 2.1.0)
+  rspec (~> 2.3.0)
