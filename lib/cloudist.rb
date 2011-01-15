@@ -42,10 +42,8 @@ module Cloudist
     # Accepts a queue name, same as that given to enqueue.
     # Yields each response along with a job ID.
     # Effectively this listens to all jobs responses
-    def listen(job_queue_name, &block)
-      reply_queue_name = Utils.reply_prefix(job_queue_name)
-      
-      _listener = Cloudist::Listener.new(reply_queue_name)
+    def listen(job_or_queue_name, &block)
+      _listener = Cloudist::Listener.new(job_or_queue_name)
       _listener.subscribe(&block)
       return _listener
     end
@@ -110,6 +108,11 @@ module Cloudist
     
     def settings=(settings_hash)
       @@settings = default_settings.update(settings_hash)
+    end
+    
+    def signal_trap!
+      ::Signal.trap('INT') { Cloudist.stop }
+      ::Signal.trap('TERM'){ Cloudist.stop }
     end
     
   end
