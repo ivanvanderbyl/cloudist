@@ -17,7 +17,7 @@ describe Cloudist::Job do
   
   it "should be constructable with payload and return data" do
     job = Cloudist::Job.new(@payload)
-    job.data.should == @payload.hash
+    job.data.should == @payload.body
   end
   
 end
