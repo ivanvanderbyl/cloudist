@@ -6,13 +6,20 @@ require "active_support/hash_with_indifferent_access"
 require "amqp"
 require "mq"
 require "logger"
+require "digest/md5"
 
+$:.unshift File.dirname(__FILE__)
 require "cloudist/core_ext/string"
 require "cloudist/errors"
 require "cloudist/utils"
 require "cloudist/basic_queue"
+require "cloudist/job_queue"
 require "cloudist/publisher"
 require "cloudist/payload"
+require "cloudist/request"
+require "cloudist/worker"
+require "cloudist/listener"
+require "cloudist/job"
 
 module Cloudist
   class << self
