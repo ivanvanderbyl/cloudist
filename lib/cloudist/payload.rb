@@ -4,22 +4,22 @@ module Cloudist
   class Payload
     include Utils
     
-    attr_accessor :hash, :headers
+    attr_accessor :body, :headers
 
     def initialize(data_hash_or_json, headers = {})
       data_hash_or_json = parse_message(data_hash_or_json) if data_hash_or_json.is_a?(String)
       
       raise Cloudist::BadPayload, "Expected Hash for payload" unless data_hash_or_json.is_a?(Hash)
 
-      @hash, @headers = HashWithIndifferentAccess.new(data_hash_or_json), headers
+      @body, @headers = HashWithIndifferentAccess.new(data_hash_or_json), headers
       update_headers
     end
 
     def formatted
-      hash, headers = apply_custom_headers
+      body, headers = apply_custom_headers
 
       # Return message formatted as JSON and headers ready for transport
-      [hash.to_json, headers]
+      [body.to_json, headers]
     end
     
     def id
@@ -37,23 +37,20 @@ module Cloudist
     
     def freeze!
       headers.freeze
-      hash.freeze
+      body.freeze
     end
     
     def update_headers
       raise StaleHeadersError, "Headers cannot be changed because payload has already been published" if published?
       
-      headers[:published_on] ||= hash.delete('published_on') || Time.now.utc.to_i
-      headers[:ttl] ||= hash.delete('ttl') || Cloudist::DEFAULT_TTL
+      headers[:published_on] ||= body.delete('published_on') || Time.now.utc.to_i
+      headers[:ttl] ||= body.delete('ttl') || Cloudist::DEFAULT_TTL
 
       # this is the event hash that gets transferred through various publish/reply actions
       headers[:event_hash] ||= id
 
       # this value should be unique for each published/received message pair
       headers[:message_id] ||= id
-      
-      # store a unique reply name
-      # headers[:reply_to] ||= reply_name
       
       # We use JSON for message transport exclusively
       headers[:content_type] ||= 'application/json'
@@ -65,7 +62,7 @@ module Cloudist
     
     def apply_custom_headers
       update_headers
-      [hash, headers]
+      [body, headers]
     end
 
     def parse_custom_headers
@@ -83,14 +80,24 @@ module Cloudist
     
     def set_reply_to(queue_name)
       headers[:reply_to] = reply_name(queue_name)
+      set_master_queue_name(queue_name)
+    end
+    
+    def set_master_queue_name(queue_name)
+      headers[:master_queue] = queue_name 
     end
     
     def reply_name(queue_name)
-      "#{queue_name}.#{id}"
+      # "#{queue_name}.#{id}"
+      Utils.reply_prefix(queue_name)
+    end
+    
+    def reply_to
+      headers[:reply_to]
     end
     
     def event_hash
-      @event_hash ||= headers[:event_hash] || hash.delete('event_hash') || create_event_hash
+      @event_hash ||= headers[:event_hash] || body.delete('event_hash') || create_event_hash
     end
     
     def create_event_hash
@@ -104,7 +111,7 @@ module Cloudist
     end
     
     def [](key)
-      hash[key]
+      body[key]
     end
     
     def published?
