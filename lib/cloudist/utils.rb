@@ -2,8 +2,8 @@ module Cloudist
   module Utils
     extend self
 
-    def reply_prefix
-      'temp.reply'
+    def reply_prefix(name)
+      "temp.reply.#{name}"
     end
 
     def generate_queue(exchange_name, second_name=nil)
@@ -17,7 +17,7 @@ module Cloudist
     
     # DEPRECATED
     def generate_reply_to(name)
-      "#{reply_prefix}.#{name}.#{generate_sym}"
+      "#{reply_prefix(name)}.#{generate_sym}"
     end
 
     def generate_sym
