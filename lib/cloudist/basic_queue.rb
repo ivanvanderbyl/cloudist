@@ -62,6 +62,20 @@ module Cloudist
       self
     end
     
+    def publish(payload)
+      payload.set_reply_to(queue_name)
+      body, headers = payload.formatted
+      ex.publish(body, headers)
+      payload.publish
+    end
+    
+    def publish_to_q(payload)
+      payload.set_reply_to(queue_name)
+      body, headers = payload.formatted
+      q.publish(body, headers)
+      payload.publish
+    end
+    
     def teardown
       @q.unsubscribe
       @mq.close
