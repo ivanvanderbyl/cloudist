@@ -1,6 +1,14 @@
+GIT
+  remote: git://github.com/customink/moqueue.git
+  revision: 091a8f57e5c79b0b25e152b4d5230e4031797d62
+  specs:
+    moqueue (0.1.4)
+      amqp
+
 GEM
   remote: http://rubygems.org/
   specs:
+    activesupport (3.0.3)
     amqp (0.6.7)
       eventmachine (>= 0.12.4)
     diff-lcs (1.1.2)
@@ -13,8 +21,6 @@ GEM
     json (1.4.6)
     mocha (0.9.10)
       rake
-    moqueue (0.1.4)
-      amqp
     rake (0.8.7)
     rcov (0.9.9)
     reek (1.2.8)
@@ -42,12 +48,13 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
+  activesupport
   amqp
   bundler (~> 1.0.0)
   jeweler (~> 1.5.2)
   json
   mocha
-  moqueue
+  moqueue!
   rcov
   reek (~> 1.2.8)
   roodi (~> 2.1.0)
