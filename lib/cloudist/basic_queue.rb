@@ -43,6 +43,8 @@ module Cloudist
       setup
       
       q.subscribe(amqp_opts) do |queue_header, json_encoded_message|
+        return if Cloudist.closing?
+        
         request = Cloudist::Request.new(self, json_encoded_message, queue_header)
         
         begin

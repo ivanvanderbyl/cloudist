@@ -24,7 +24,7 @@ module Cloudist
   class << self
     # Start the Cloudist loop
     # Cloudist.start {
-    #   
+    #   # Do stuff in here
     # }
     def start(options = {}, &block)
       config = settings.update(options)
@@ -33,21 +33,30 @@ module Cloudist
       end
     end
 
+    # Define a worker. Must be called inside start loop
+    # worker {
+    #   job('make.sandwich') {}
+    # }
+    # Refer to examples.
     def worker(options = {}, &block)
       _worker = Cloudist::Worker.new(options)
       _worker.instance_eval(&block)
       return _worker
     end
     
-    # Accepts a queue name, same as that given to enqueue.
-    # Yields each response along with a job ID.
-    # Effectively this listens to all jobs responses
+    # Accepts either a queue name or a job instance returns from enqueue.
+    # This method operates in two modes, when given a queue name, it
+    # will return all responses regardless of job id so you can use the job
+    # id to lookup a database record to update etc.
+    # When given a job instance it will only return messages from that job.
     def listen(job_or_queue_name, &block)
       _listener = Cloudist::Listener.new(job_or_queue_name)
       _listener.subscribe(&block)
       return _listener
     end
     
+    # Enqueues a job.
+    # Takes a queue name and data hash to be sent to the worker.
     # Returns Job instance
     # Use Job#id to reference job later on.
     def enqueue(job_queue_name, data = nil)
@@ -56,6 +65,7 @@ module Cloudist
       Cloudist::Publisher.enqueue(job_queue_name, data)
     end
 
+    # Call this at anytime inside the loop to exit the app.
     def stop_safely
       ::EM.add_timer(0.2) { 
         ::AMQP.stop { 
