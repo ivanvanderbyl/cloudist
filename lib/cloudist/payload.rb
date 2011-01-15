@@ -22,7 +22,27 @@ module Cloudist
       [hash.to_json, headers]
     end
     
-    def apply_custom_headers
+    def id
+      @id ||= event_hash.to_s
+    end
+    
+    def id=(new_id)
+      @id = new_id.to_s
+      update_headers
+    end
+    
+    def frozen?
+      headers.frozen?
+    end
+    
+    def freeze!
+      # headers.freeze
+      # hash.freeze
+    end
+    
+    def update_headers
+      raise StaleHeadersError, "Headers cannot be changed because payload has already been published" if published?
+      
       headers[:published_on] ||= hash.delete('published_on') || Time.now.utc.to_i
       headers[:ttl] ||= hash.delete('ttl') || Cloudist::DEFAULT_TTL
 
