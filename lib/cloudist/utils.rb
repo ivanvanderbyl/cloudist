@@ -1,7 +1,11 @@
 module Cloudist
   module Utils
     extend self
-    
+
+    def reply_prefix
+      'temp.reply'
+    end
+
     def generate_queue(exchange_name, second_name=nil)
       second_name ||= $$
       "#{generate_name_for_instance(exchange_name)}.#{second_name}"
@@ -11,8 +15,9 @@ module Cloudist
       "#{name}.#{Socket.gethostname}"
     end
     
+    # DEPRECATED
     def generate_reply_to(name)
-      "temp.reply.#{name}.#{generate_sym}"
+      "#{reply_prefix}.#{name}.#{generate_sym}"
     end
 
     def generate_sym
