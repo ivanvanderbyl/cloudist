@@ -47,10 +47,13 @@ module Cloudist
       headers[:ttl] ||= hash.delete('ttl') || Cloudist::DEFAULT_TTL
 
       # this is the event hash that gets transferred through various publish/reply actions
-      headers[:event_hash] ||= event_hash
+      headers[:event_hash] ||= id
 
       # this value should be unique for each published/received message pair
-      headers[:message_id] ||= create_event_hash
+      headers[:message_id] ||= id
+      
+      # store a unique reply name
+      # headers[:reply_to] ||= reply_name
       
       # We use JSON for message transport exclusively
       headers[:content_type] ||= 'application/json'
@@ -58,10 +61,13 @@ module Cloudist
       # some strange behavior with integers makes it better to
       # convert all amqp headers to strings to avoid any problems
       headers.each { |k,v| headers[k] = v.to_s }
-
-      [hash, headers]
     end
     
+    def apply_custom_headers
+      update_headers
+      [hash, headers]
+    end
+
     def parse_custom_headers
       return { } unless headers
 
