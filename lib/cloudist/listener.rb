@@ -1,18 +1,17 @@
 module Cloudist
   class Listener
     
-    attr_accessor :job_id
+    attr_reader :job_queue_name
     
-    def initialize(job_or_id)
-      if job_or_id.is_a?(Cloudist::Job)
-        job_or_id = job_or_id.id
-      end
-      
-      @job_id = job_or_id
+    def initialize(job_queue_name)
+      @job_queue_name = job_queue_name
     end
     
-    def subscribe!
-      Cloudist::ReplyQueue.new()
+    def subscribe(&block)
+      reply_queue = Cloudist::ReplyQueue.new(job_queue_name)
+      reply_queue.subscribe do |request|
+        Cloudist.log.info("REPLY: #{request.payload.inspect}")
+      end
     end
     
   end
