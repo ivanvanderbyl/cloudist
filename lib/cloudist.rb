@@ -25,8 +25,9 @@ module Cloudist
     # Cloudist.start {
     #   
     # }
-    def start(settings = {}, &block)
-      AMQP.start(settings) do
+    def start(options = {}, &block)
+      config = settings.update(options)
+      AMQP.start(config) do
         self.instance_eval(&block)
       end
     end
@@ -69,11 +70,41 @@ module Cloudist
     end
 
     def log
-      @logger ||= Logger.new($stdout)
+      @@log ||= Logger.new($stdout)
     end
     
-    def handle_error(error)
-      log.error "#{err.class}: #{err.message}", :exception => err
+    def log=(log)
+      @@log = log
+    end
+    
+    def handle_error(e)
+      log.error "#{e.class}: #{e.message}"#, :exception => e
+      log.error e.backtrace.join("\n")
+    end
+    
+    def version
+      @@version ||= File.read(File.dirname(__FILE__) + '/../VERSION').strip
+    end
+    
+    def default_settings
+      uri = URI.parse(ENV["AMQP_URL"] || 'amqp://guest:guest@localhost:5672/')
+      {
+        :vhost => uri.path,
+        :host => uri.host,
+        :user => uri.user,
+        :port => uri.port || 5672,
+        :pass => uri.password
+      }
+    rescue Object => e
+      raise "invalid AMQP_URL: (#{uri.inspect}) #{e.class} -> #{e.message}"
+    end
+    
+    def settings
+      @@settings ||= default_settings
+    end
+    
+    def settings=(settings_hash)
+      @@settings = default_settings.update(settings_hash)
     end
     
   end
