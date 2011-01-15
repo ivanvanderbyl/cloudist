@@ -17,20 +17,20 @@ module Cloudist
     end
     
     def setup
+      return if @setup == true
+      
       @mq = MQ.new
       @q = @mq.queue(queue_name, opts)
       # if we don't specify an exchange name it defaults to the queue_name
       @ex = @mq.direct(opts[:exchange_name] || queue_name)
 
       q.bind(ex) if ex
+      
+      @setup = true
     end
     
     def log
       Cloudist.log
-    end
-    
-    def temp?
-      false
     end
     
     def tag
@@ -71,7 +71,6 @@ module Cloudist
     end
     
     def publish_to_q(payload)
-      payload.set_reply_to(queue_name)
       body, headers = payload.formatted
       q.publish(body, headers)
       payload.publish
