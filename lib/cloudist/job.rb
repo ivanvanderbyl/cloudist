@@ -10,7 +10,7 @@ module Cloudist
     end
     
     def data
-      payload.hash
+      payload.body
     end
     
     def log
@@ -22,27 +22,24 @@ module Cloudist
     end
     
     def reply(data, headers = {})
-      # opts.merge!(default_publish_opts)
-      # reply_to = droid_headers[:reply_to] || self.msg['reply_to']
-      # raise UnknownReplyTo unless reply_to
-      # JobQueue.publish_to_q(reply_to, data, opts, popts)
+      # headers.update(:message_id => payload.headers[:message_id])
+      headers = {
+        :message_id => payload.headers[:message_id],
+        :reply_type => "reply"
+      }.update(headers)
       
-      # Factory.log.debug("Reply queue: #{request.reply_to}")
-      # 
-      # reply_queue = ReplyQueue.new(request.reply_to)
-      # reply_queue.setup
-      # 
-      # response, headers = Factory::Utils.format_publish(data, headers)
-      # reply_queue.q.publish(response, headers)
-      log.debug("Replying: #{data.inspect} - Headers: #{headers.inspect}")
+      reply_payload = Payload.new(data, headers)
       
+      reply_queue = ReplyQueue.new(payload.reply_to)
+      reply_queue.setup
+      reply_queue.publish_to_q(reply_payload)
       
-      
+      # log.debug("Replying: #{data.inspect} - Payload: #{reply_payload.inspect}")
     end
     
     def event(event_name, data = {})
       data = {} unless data
-      reply({:event => event_name})
+      reply({:event => event_name}.merge(payload.body), {:reply_type => "event"})
     end
     
     def method_missing(meth, *args, &blk)
