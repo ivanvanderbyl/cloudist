@@ -14,7 +14,7 @@ module Cloudist
     def job(queue_name, &block)
       q = JobQueue.new(queue_name)
       q.subscribe do |request|
-        j = Job.new(request.payload)
+        j = Job.new(request.payload.dup)
         j.instance_eval(&block)
         j.cleanup
       end
