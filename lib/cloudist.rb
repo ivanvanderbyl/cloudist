@@ -57,11 +57,9 @@ module Cloudist
     end
 
     def stop_safely
-      log.debug("Shutting down...")
       ::EM.add_timer(0.2) { 
         ::AMQP.stop { 
           ::EM.stop
-          log.debug("Good bye")
         }
       }
     end

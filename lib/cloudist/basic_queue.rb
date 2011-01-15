@@ -79,7 +79,7 @@ module Cloudist
     def teardown
       @q.unsubscribe
       @mq.close
-      log.info "amqp_unsubscribe #{tag}"
+      log.debug "amqp_unsubscribe #{tag}"
     end
 
     def destroy
