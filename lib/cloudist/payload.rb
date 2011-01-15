@@ -52,6 +52,10 @@ module Cloudist
       h
     end
     
+    def set_reply_to(queue_name)
+      headers[:reply_to] = "#{reply_prefix}.#{queue_name}.#{id}"
+    end
+    
     def event_hash
       @event_hash ||= headers[:event_hash] || hash.delete('event_hash') || create_event_hash
     end
