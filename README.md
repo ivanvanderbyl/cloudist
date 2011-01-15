@@ -24,6 +24,19 @@ Or if your app has a Gemfile:
 Usage
 -----
 
+Cloudist requires an EventMachine reactor loop and an AMQP connection, so if your application is already using one, or your web server supplies one (for example Thin) these examples will work
+out of the box. Otherwise simply wrap everything inside this block:
+    
+    Cloudist.settings = {:user => 'guest'} # Standard AMQP settings
+    Cloudist.start {
+      # usual stuff here
+      worker {
+        # define a worker
+      }
+    }
+    
+This will start and AMQP connection and EM loop then yield everything inside it.
+
 In your worker:
 
     Cloudist.worker {
@@ -47,6 +60,10 @@ In your application:
         # Called when we finish making a sandwich
       }
     }
+    
+You don't need to listen to responses immediately, if you store the job_id you can listen to responses at any time in the near future.
+
+You can also queue jobs outside an EventMachine loop using Cloudist.enqueue but this will be very slow as it has to connect to your message queue first.
 
 Acknowledgements
 -------
