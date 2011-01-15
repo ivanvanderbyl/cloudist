@@ -12,6 +12,7 @@ require "cloudist/errors"
 require "cloudist/utils"
 require "cloudist/basic_queue"
 require "cloudist/job_queue"
+require "cloudist/reply_queue"
 require "cloudist/publisher"
 require "cloudist/payload"
 require "cloudist/request"
@@ -37,11 +38,15 @@ module Cloudist
       _worker.instance_eval(&block)
       return _worker
     end
-
-    def listener(job_or_id, &block)
-      _listener = Cloudist::Listener.new(job_or_id)
-      _listener.subscribe!
-      _listener.instance_eval(&block)
+    
+    # Accepts a queue name, same as that given to enqueue.
+    # Yields each response along with a job ID.
+    # Effectively this listens to all jobs responses
+    def listen(job_queue_name, &block)
+      reply_queue_name = Utils.reply_prefix(job_queue_name)
+      
+      _listener = Cloudist::Listener.new(reply_queue_name)
+      _listener.subscribe(&block)
       return _listener
     end
     
