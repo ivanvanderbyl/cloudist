@@ -1,11 +1,9 @@
 require File.expand_path(File.dirname(__FILE__) + '/spec_helper')
 
 describe "Cloudist" do
-  before(:all) do
-    # overload_amqp
-  end
-    
+  
   before(:each) do
+    overload_amqp
     reset_broker
   end
   
@@ -21,6 +19,6 @@ describe "Cloudist" do
     Cloudist.stubs(:worker).returns(true)
     Cloudist.expects(:worker).once
     
-    run_start
+    # run_start
   end
 end

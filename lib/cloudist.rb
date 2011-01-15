@@ -1,6 +1,18 @@
-require "json"
+require 'uri'
+if !defined?(JSON) && !defined?(JSON_LOADED)
+	require 'json/pure'
+end
+require "active_support/hash_with_indifferent_access"
 require "amqp"
 require "mq"
+require "logger"
+
+require "cloudist/core_ext/string"
+require "cloudist/errors"
+require "cloudist/utils"
+require "cloudist/basic_queue"
+require "cloudist/publisher"
+require "cloudist/payload"
 
 module Cloudist
   class << self
