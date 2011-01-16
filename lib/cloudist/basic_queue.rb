@@ -45,7 +45,7 @@ module Cloudist
       q.subscribe(amqp_opts) do |queue_header, json_encoded_message|
         return if Cloudist.closing?
         
-        request = Cloudist::Request.new(self, json_encoded_message, queue_header)
+        request = Cloudist::Request.new(self, ::Marshal.load(json_encoded_message), queue_header)
         
         begin
           raise Cloudist::ExpiredMessage if request.expired?
@@ -68,7 +68,7 @@ module Cloudist
     def publish(payload)
       payload.set_reply_to(queue_name)
       body, headers = payload.formatted
-      ex.publish(body, headers)
+      ex.publish(::Marshal.dump(body), headers)
       payload.publish
     end
     
