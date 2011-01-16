@@ -25,7 +25,7 @@ module Cloudist
       # headers.update(:message_id => payload.headers[:message_id])
       headers = {
         :message_id => payload.headers[:message_id],
-        :reply_type => "reply"
+        :message_type => "reply"
       }.update(headers)
       
       reply_payload = Payload.new(data, headers)
@@ -43,13 +43,9 @@ module Cloudist
       }.update(options)
       
       event_data = {} if event_data.nil?
-      
-      event_data = {
-        :event => event_name
-      }.update(event_data)
       event_data.merge!(payload.body) if options[:echo] == true
       
-      reply(event_data, {:reply_type => "event"})
+      reply(event_data, {:message_type => "event", :event => event_name})
     end
     
     def method_missing(meth, *args, &blk)
