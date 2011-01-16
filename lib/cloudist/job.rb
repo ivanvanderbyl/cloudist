@@ -37,9 +37,15 @@ module Cloudist
       # log.debug("Replying: #{data.inspect} - Payload: #{reply_payload.inspect}")
     end
     
-    def event(event_name, data = {})
-      data = {} unless data
-      reply({:event => event_name}.merge(payload.body), {:reply_type => "event"})
+    def event(event_name, data = {}, options = {})
+      options = {
+        :echo => false
+      }.update(options)
+      
+      data = {:event => event_name}.update(data)
+      data.merge!(payload.body) if options[:echo] == true
+      
+      reply(data, {:reply_type => "event"})
     end
     
     def method_missing(meth, *args, &blk)
