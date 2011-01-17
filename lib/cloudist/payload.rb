@@ -4,21 +4,21 @@ module Cloudist
   class Payload
     include Utils
     
-    attr_accessor :body, :headers
+    attr_reader :body, :headers
 
     def initialize(data_hash_or_json, headers = {})
+      @headers = headers
+      
       data_hash_or_json = parse_message(data_hash_or_json) if data_hash_or_json.is_a?(String)
       
       raise Cloudist::BadPayload, "Expected Hash for payload" unless data_hash_or_json.is_a?(Hash)
 
-      @body, @headers = HashWithIndifferentAccess.new(data_hash_or_json), headers
+      @body = HashWithIndifferentAccess.new(data_hash_or_json)
       update_headers
     end
 
+    # Return message formatted as JSON and headers ready for transport in array
     def formatted
-      body, headers = apply_custom_headers
-
-      # Return message formatted as JSON and headers ready for transport
       [body.to_json, headers]
     end
     
@@ -54,15 +54,12 @@ module Cloudist
       
       # We use JSON for message transport exclusively
       headers[:content_type] ||= 'application/json'
-
+      
+      # headers[:message_type] ||= body.delete('message_type') || 'reply'
+      
       # some strange behavior with integers makes it better to
       # convert all amqp headers to strings to avoid any problems
       headers.each { |k,v| headers[k] = v.to_s }
-    end
-    
-    def apply_custom_headers
-      update_headers
-      [body, headers]
     end
 
     def parse_custom_headers
