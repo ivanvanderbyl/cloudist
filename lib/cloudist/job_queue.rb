@@ -15,7 +15,7 @@ module Cloudist
     end
 
     def subscribe(amqp_opts={}, opts={})
-      amqp_opts[:ack] = true
+      amqp_opts[:ack] ||= true
       super(amqp_opts, opts) do |request|
         begin
           yield request if block_given?
