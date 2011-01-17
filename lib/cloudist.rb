@@ -1,5 +1,5 @@
 require 'uri'
-require 'json'
+require 'json' unless defined? ActiveSupport::JSON
 require "active_support/hash_with_indifferent_access"
 require "amqp"
 require "mq"

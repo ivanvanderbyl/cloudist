@@ -19,9 +19,8 @@ module Cloudist
       reply_queue = Cloudist::ReplyQueue.new(job_queue_name)
       reply_queue.setup(job_id) if job_id
       
-      reply_queue.subscribe do |request|
+      reply_queue.subscribe do |request|        
         job = Job.new(request.payload)
-        
         job.instance_eval(&block)
       end
     end

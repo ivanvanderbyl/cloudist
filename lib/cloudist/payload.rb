@@ -107,7 +107,7 @@ module Cloudist
     
     def parse_message(raw)
       return { } unless raw
-      JSON.parse(raw)
+      decode_json(raw)
     end
     
     def [](key)

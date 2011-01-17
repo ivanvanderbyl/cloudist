@@ -32,5 +32,13 @@ module Cloudist
       ]
       "%04x%04x%04x%04x%04x%06x%06x" % values
     end
+    
+    def decode_json(string)
+      if defined? ActiveSupport::JSON
+        ActiveSupport::JSON.decode string
+      else
+        JSON.load string
+      end
+    end
   end
 end
