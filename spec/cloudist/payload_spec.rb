@@ -15,28 +15,25 @@ describe Cloudist::Payload do
   
   it "should prepare headers" do
     payload = Cloudist::Payload.new({:bread => 'white'})
-    body, headers = payload.apply_custom_headers
-    body.should == {"bread"=>"white"}
-    headers.has_key?(:ttl).should be_true
-    headers.has_key?(:content_type).should be_true
-    headers[:content_type].should == "application/json"
-    headers.has_key?(:published_on).should be_true
-    headers.has_key?(:event_hash).should be_true
-    headers.has_key?(:message_id).should be_true
+    payload.body.should == {"bread"=>"white"}
+    payload.headers.has_key?(:ttl).should be_true
+    payload.headers.has_key?(:content_type).should be_true
+    payload.headers[:content_type].should == "application/json"
+    payload.headers.has_key?(:published_on).should be_true
+    payload.headers.has_key?(:event_hash).should be_true
+    payload.headers.has_key?(:message_id).should be_true
   end
   
   it "should extract published_on from data" do
     payload = Cloudist::Payload.new({:bread => 'white', :published_on => 12345678})
-    body, headers = payload.apply_custom_headers
-    body.should == {"bread"=>"white"}
-    headers[:published_on].should == "12345678"
+    payload.body.should == {"bread"=>"white"}
+    payload.headers[:published_on].should == "12345678"
   end
   
   it "should extract custom event hash from data" do
     payload = Cloudist::Payload.new({:bread => 'white', :event_hash => 'foo'})
-    body, headers = payload.apply_custom_headers
-    body.should == {"bread"=>"white"}
-    headers[:event_hash].should == "foo"
+    payload.body.should == {"bread"=>"white"}
+    payload.headers[:event_hash].should == "foo"
   end
   
   it "should parse JSON message" do
@@ -67,10 +64,11 @@ describe Cloudist::Payload do
   end
   
   it "should format payload for sending" do
-    payload = Cloudist::Payload.new({:bread => 'white'}, {:event_hash => 'foo'})
+    payload = Cloudist::Payload.new({:bread => 'white'}, {:event_hash => 'foo', :message_type => 'reply'})
     json, headers = payload.formatted
     json.should == "{\"bread\":\"white\"}"
     headers[:ttl].should == "300"
+    headers[:message_type].should == 'reply'
   end
   
   it "should generate a unique payload ID" do

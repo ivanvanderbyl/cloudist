@@ -40,5 +40,6 @@ module Cloudist
         JSON.load string
       end
     end
+    
   end
 end

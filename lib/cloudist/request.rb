@@ -7,7 +7,7 @@ module Cloudist
 
       @payload = Cloudist::Payload.new(json_encoded_message.dup, queue_header.properties.dup)
       @headers = @payload.parse_custom_headers
-      
+
       @start = Time.now.utc.to_i
     end
 
