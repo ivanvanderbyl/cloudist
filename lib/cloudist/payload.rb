@@ -8,6 +8,7 @@ module Cloudist
 
     def initialize(data_hash_or_json, headers = {})
       @headers = headers
+      @published = false
       
       data_hash_or_json = parse_message(data_hash_or_json) if data_hash_or_json.is_a?(String)
       
@@ -41,7 +42,7 @@ module Cloudist
     end
     
     def update_headers
-      raise StaleHeadersError, "Headers cannot be changed because payload has already been published" if published?
+      # raise StaleHeadersError, "Headers cannot be changed because payload has already been published" if published?
       
       headers[:published_on] ||= body.delete('published_on') || Time.now.utc.to_i
       headers[:ttl] ||= body.delete('ttl') || Cloudist::DEFAULT_TTL

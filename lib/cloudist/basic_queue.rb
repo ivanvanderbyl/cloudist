@@ -51,7 +51,7 @@ module Cloudist
           raise Cloudist::ExpiredMessage if request.expired?
           yield request if block_given?
           finished = Time.now.utc.to_i
-
+          
         rescue Cloudist::ExpiredMessage
           log.info "amqp_message action=timeout #{tag} ttl=#{request.ttl} age=#{request.age} #{request.inspect}"
           request.ack if amqp_opts[:ack]
@@ -76,6 +76,7 @@ module Cloudist
       body, headers = payload.formatted
       q.publish(body, headers)
       payload.publish
+      return headers
     end
     
     def teardown
