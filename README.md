@@ -39,15 +39,29 @@ This will start and AMQP connection and EM loop then yield everything inside it.
 
 In your worker:
 
-    Cloudist.worker {
-      job('make.sandwich') {
-        # Make sandwich here
-        
-        # Your worker has access to the data sent from the server in the 'data' attribute
-        data # => {:bread => "white", :sauce => 'bbq'}
-        
-        # Fire the finished event
-        finished!
+    Cloudist.start {
+      log.info("Started Worker")
+
+      worker {
+        job('make.sandwich') {
+          # Fire the started event
+
+          log.info("JOB (#{id}) Make sandwich with #{data[:bread]} bread")
+          log.debug(data.inspect)
+
+          EM.defer {
+            progress(0)
+            started!
+            progress(10)
+            sleep(1)
+            progress(20)
+            sleep(5)
+            progress(90)
+            sleep(1)
+            finished!
+            progress(100)
+          }
+        }    
       }
     }
     
@@ -55,10 +69,26 @@ In your application:
 
     job = Cloudist.enqueue('make.sandwich', :bread => "white", :sauce => 'bbq')
     
-    Cloudist.listen(job) {
-      event('finished') {
-        # Called when we finish making a sandwich
+    Cloudist.start {
+
+      log.info("Dispatching sandwich making job...")
+      enqueue('make.sandwich', {:bread => 'white'})
+
+      # Listen to all sandwich jobs
+      listen('make.sandwich') {
+        progress {
+          Cloudist.log.info("Progress: #{data[:progress]}")
+        }
+
+        event('started') {
+          Cloudist.log.info("Started making sandwich at #{Time.now.to_s}")
+        }
+
+        event('finished'){
+          Cloudist.log.info("Finished making sandwich at #{Time.now.to_s}")
+        }
       }
+
     }
     
 You don't need to listen to responses immediately, if you store the job_id you can listen to responses at any time in the near future.

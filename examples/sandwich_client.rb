@@ -22,9 +22,6 @@ Cloudist.start {
   
   # Listen to all sandwich jobs
   listen('make.sandwich') {
-    # Cloudist.log.info("Make sandwich event: #{data[:event]}")
-    # Cloudist.log.debug(queue_header.headers.inspect)
-    
     progress {
       Cloudist.log.info("Progress: #{data[:progress]}")
     }
