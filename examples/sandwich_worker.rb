@@ -22,12 +22,15 @@ Cloudist.start {
   worker {
     job('make.sandwich') {
       # Fire the started event
-      started!
       
       log.info("JOB (#{id}) Make sandwich with #{data[:bread]} bread")
       log.debug(data.inspect)
       
-      finished!
+      EM.defer {
+        started!
+        sleep(5)
+        finished!
+      }
     }    
   }
 }
