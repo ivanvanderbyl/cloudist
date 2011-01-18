@@ -5,7 +5,7 @@
 
 Gem::Specification.new do |s|
   s.name = %q{cloudist}
-  s.version = "0.0.3"
+  s.version = "0.1.0"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Ivan Vanderbyl"]
@@ -31,6 +31,7 @@ Gem::Specification.new do |s|
     "examples/sandwich_worker.rb",
     "lib/cloudist.rb",
     "lib/cloudist/basic_queue.rb",
+    "lib/cloudist/callback.rb",
     "lib/cloudist/core_ext/string.rb",
     "lib/cloudist/errors.rb",
     "lib/cloudist/job.rb",
