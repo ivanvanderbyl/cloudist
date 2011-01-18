@@ -55,6 +55,19 @@ module Cloudist
       reply(event_data, {:event => event_name, :message_type => 'event'}, options)
     end
     
+    def safely(&blk)
+      begin
+        yield
+      rescue Exception => e
+        handle_error(e)
+      end
+    end
+    
+    # This will transfer the Exception object to the client
+    def handle_error(e)
+      reply({:exception_class => e.name, :message => e.message, :backtrace => e.backtrace}, {:message_type => 'error'})
+    end
+    
     def method_missing(meth, *args, &blk)
       if meth.to_s.ends_with?("!")
         event(meth.to_s.gsub(/(!)$/, ''), args.shift)

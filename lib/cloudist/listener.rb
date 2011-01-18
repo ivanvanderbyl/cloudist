@@ -4,7 +4,7 @@ module Cloudist
     
     attr_reader :job_queue_name, :job_id, :callbacks
     
-    @@valid_callbacks = ["event", "progress", "reply", "update"]
+    @@valid_callbacks = ["event", "progress", "reply", "update", "error"]
     
     def initialize(job_or_queue_name)
       @callbacks = {}
