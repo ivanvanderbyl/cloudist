@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = %q{cloudist}
-  s.version = "0.0.2"
+  s.version = "0.0.3"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Ivan Vanderbyl"]
-  s.date = %q{2011-01-16}
+  s.date = %q{2011-01-18}
   s.description = %q{Cloudist is a simple, highly scalable job queue for Ruby applications, it can run within Rails, or on EC2, and does not load your entire Rails stack like delayed job does.}
   s.email = %q{ivanvanderbyl@me.com}
   s.extra_rdoc_files = [
@@ -25,6 +25,7 @@ Gem::Specification.new do |s|
     "README.md",
     "Rakefile",
     "VERSION",
+    "cloudist.gemspec",
     "examples/queue_message.rb",
     "examples/sandwich_client.rb",
     "examples/sandwich_worker.rb",
