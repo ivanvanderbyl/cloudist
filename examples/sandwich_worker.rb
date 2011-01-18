@@ -27,9 +27,15 @@ Cloudist.start {
       log.debug(data.inspect)
       
       EM.defer {
+        progress(0)
         started!
+        progress(10)
+        sleep(1)
+        progress(20)
         sleep(5)
+        progress(90)
         finished!
+        progress(100)
       }
     }    
   }
