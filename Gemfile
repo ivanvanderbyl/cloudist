@@ -1,8 +1,8 @@
 source "http://rubygems.org"
 
-gem "amqp"
-gem "json"
-gem "activesupport"
+gem "amqp", "~> 0.6.7"
+gem "json", "~> 1.4.6"
+gem "activesupport", "~> 3.0.3"
 
 # Add dependencies to develop your gem here.
 # Include everything needed to run rake, tests, features, etc.

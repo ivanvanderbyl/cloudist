@@ -48,11 +48,11 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
-  activesupport
-  amqp
+  activesupport (~> 3.0.3)
+  amqp (~> 0.6.7)
   bundler (~> 1.0.0)
   jeweler (~> 1.5.2)
-  json
+  json (~> 1.4.6)
   mocha
   moqueue!
   rcov
