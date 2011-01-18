@@ -5,7 +5,7 @@ module Cloudist
     def initialize(queue, json_encoded_message, queue_header)
       @qobj, @queue_header = queue, queue_header
 
-      @payload = Cloudist::Payload.new(json_encoded_message.dup, queue_header.properties.dup)
+      @payload = Cloudist::Payload.new(json_encoded_message.dup, queue_header.headers.dup)
       @headers = @payload.parse_custom_headers
 
       @start = Time.now.utc.to_i

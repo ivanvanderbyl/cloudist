@@ -4,10 +4,10 @@ module Cloudist
   class Payload
     include Utils
     
-    attr_reader :body, :headers
+    attr_reader :body, :publish_opts, :headers
 
-    def initialize(data_hash_or_json, headers = {})
-      @headers = headers
+    def initialize(data_hash_or_json, headers = {}, publish_opts = {})
+      @publish_opts, @headers = publish_opts, headers
       @published = false
       
       data_hash_or_json = parse_message(data_hash_or_json) if data_hash_or_json.is_a?(String)
@@ -20,7 +20,9 @@ module Cloudist
 
     # Return message formatted as JSON and headers ready for transport in array
     def formatted
-      [body.to_json, headers]
+      update_headers
+      
+      [body.to_json, publish_opts]
     end
     
     def id
@@ -42,8 +44,12 @@ module Cloudist
     end
     
     def update_headers
-      # raise StaleHeadersError, "Headers cannot be changed because payload has already been published" if published?
-      
+      headers = extract_custom_headers
+      (publish_opts[:headers] ||= {}).merge!(headers)
+    end
+    
+    def extract_custom_headers
+      raise StaleHeadersError, "Headers cannot be changed because payload has already been published" if published?
       headers[:published_on] ||= body.delete('published_on') || Time.now.utc.to_i
       headers[:ttl] ||= body.delete('ttl') || Cloudist::DEFAULT_TTL
 
@@ -56,11 +62,16 @@ module Cloudist
       # We use JSON for message transport exclusively
       headers[:content_type] ||= 'application/json'
       
-      # headers[:message_type] ||= body.delete('message_type') || 'reply'
+      # headers[:headers][:message_type] = 'event'
+       # ||= body.delete('message_type') || 'reply'
+      
+      # headers[:headers] = custom_headers
       
       # some strange behavior with integers makes it better to
       # convert all amqp headers to strings to avoid any problems
       headers.each { |k,v| headers[k] = v.to_s }
+      
+      headers
     end
 
     def parse_custom_headers

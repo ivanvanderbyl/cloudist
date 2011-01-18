@@ -65,7 +65,9 @@ describe Cloudist::Payload do
   
   it "should format payload for sending" do
     payload = Cloudist::Payload.new({:bread => 'white'}, {:event_hash => 'foo', :message_type => 'reply'})
-    json, headers = payload.formatted
+    json, popts = payload.formatted
+    headers = popts[:headers]
+    
     json.should == "{\"bread\":\"white\"}"
     headers[:ttl].should == "300"
     headers[:message_type].should == 'reply'
