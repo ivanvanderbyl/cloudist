@@ -44,11 +44,10 @@ In your worker:
 
       worker {
         job('make.sandwich') {
-          # Fire the started event
-
           log.info("JOB (#{id}) Make sandwich with #{data[:bread]} bread")
           log.debug(data.inspect)
 
+          # Do long running tasks here
           EM.defer {
             progress(0)
             started!
@@ -66,11 +65,9 @@ In your worker:
     }
     
 In your application:
-
-    job = Cloudist.enqueue('make.sandwich', :bread => "white", :sauce => 'bbq')
     
     Cloudist.start {
-
+      # Enqueue sandwich job      
       log.info("Dispatching sandwich making job...")
       enqueue('make.sandwich', {:bread => 'white'})
 
@@ -90,10 +87,8 @@ In your application:
       }
 
     }
-    
-You don't need to listen to responses immediately, if you store the job_id you can listen to responses at any time in the near future.
 
-You can also queue jobs outside an EventMachine loop using Cloudist.enqueue but this will be very slow as it has to connect to your message queue first.
+If your application provides an AMQP.start loop already, you can skip the Cloudist.start
 
 Acknowledgements
 -------
@@ -103,8 +98,6 @@ Portions of this gem are based on code from the following projects:
 - Heroku's Droid gem
 - Lizzy
 - Minion
-- Nanite
-- Smith
 
 Contributing to Cloudist
 ------------------------
