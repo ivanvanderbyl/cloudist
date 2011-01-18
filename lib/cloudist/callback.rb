@@ -1,6 +1,7 @@
 module Cloudist
   class Callback
-
+    include Cloudist::CallbackMethods
+    
     attr_reader :payload, :source
 
     def initialize(source)
@@ -11,18 +12,5 @@ module Cloudist
       @payload = payload
       instance_eval(&source)
     end
-    
-    def data
-      payload.body
-    end
-    
-    def headers
-      payload.headers
-    end
-    
-    def runtime
-      
-    end
-    
   end
 end
