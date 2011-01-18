@@ -19,9 +19,14 @@ Cloudist.start {
   
   log.info("Dispatching sandwich making job...")
   enqueue('make.sandwich', {:bread => 'white'})
+  # enqueue('make.sandwich', {:bread => 'brown'})
   
   # Listen to all sandwich jobs
   listen('make.sandwich') {
+    everything {
+      Cloudist.log.info("Job ID: #{job_id}")
+    }
+    
     progress {
       Cloudist.log.info("Progress: #{data[:progress]}")
     }

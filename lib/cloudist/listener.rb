@@ -1,5 +1,6 @@
 module Cloudist
   class Listener
+    include Cloudist::CallbackMethods
     
     attr_reader :job_queue_name, :job_id, :callbacks
     
@@ -30,6 +31,13 @@ module Cloudist
         
         key = [payload.message_type.to_s, payload.headers[:event]].compact.join(':')
         
+        # If we want to get a callback on every event, do it here
+        if callbacks.has_key?('everything')
+          callbacks['everything'].each do |c|
+            c.call(payload)
+          end
+        end
+        
         if callbacks.has_key?(key)
           callbacks_to_call = callbacks[key]
           callbacks_to_call.each do |c|
@@ -37,6 +45,10 @@ module Cloudist
           end
         end
       end
+    end
+    
+    def everything(&blk)
+      (@callbacks['everything'] ||= []) << Callback.new(blk)
     end
     
     def method_missing(meth, *args, &blk)
