@@ -18,8 +18,10 @@ Cloudist.signal_trap!
 Cloudist.start {
   
   log.info("Dispatching sandwich making job...")
-  enqueue('make.sandwich', {:bread => 'white'})
+  job = enqueue('make.sandwich', {:bread => 'white'})
   # enqueue('make.sandwich', {:bread => 'brown'})
+  
+  log.info("Queued job with ID: #{job.id}")
   
   # Listen to all sandwich jobs
   listen('make.sandwich') {
