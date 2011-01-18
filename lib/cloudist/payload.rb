@@ -105,6 +105,10 @@ module Cloudist
       headers[:reply_to]
     end
     
+    def message_type
+      headers[:message_type]
+    end
+    
     def event_hash
       @event_hash ||= headers[:event_hash] || body.delete('event_hash') || create_event_hash
     end
