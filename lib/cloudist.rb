@@ -18,6 +18,7 @@ require "cloudist/payload"
 require "cloudist/request"
 require "cloudist/worker"
 require "cloudist/listener"
+require "cloudist/callback"
 require "cloudist/job"
 
 module Cloudist
