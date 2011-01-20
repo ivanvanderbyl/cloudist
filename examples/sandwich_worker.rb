@@ -23,13 +23,13 @@ Cloudist.start {
     log.info("JOB (#{id}) Make sandwich with #{data[:bread]} bread")
     
     job.started!
-    job.progress(0)
-    job.progress(10)
-    sleep(1)
-    job.progress(20)
-    sleep(5)
-    job.progress(90)
-    job.progress(100)
+    
+    (1..20).each do |i|
+      job.progress(i * 5)
+      sleep(1)
+      
+      raise ArgumentError, "NOT GOOD!" if i == 4
+    end
     job.finished!
   }
   
