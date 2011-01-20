@@ -6,6 +6,14 @@ module Cloudist
       "temp.reply.#{name}"
     end
 
+    def log_prefix(name)
+      "temp.log.#{name}"
+    end
+
+    def stats_prefix(name)
+      "temp.stats.#{name}"
+    end
+
     def generate_queue(exchange_name, second_name=nil)
       second_name ||= $$
       "#{generate_name_for_instance(exchange_name)}.#{second_name}"
