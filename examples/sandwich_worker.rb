@@ -19,24 +19,18 @@ Cloudist.signal_trap!
 Cloudist.start {
   log.info("Started Worker")
   
-  worker {
-    job('make.sandwich') {
-      # Fire the started event
-      
-      log.info("JOB (#{id}) Make sandwich with #{data[:bread]} bread")
-      log.debug(data.inspect)
-      
-      EM.defer {
-        progress(0)
-        started!
-        progress(10)
-        sleep(1)
-        progress(20)
-        sleep(5)
-        progress(90)
-        finished!
-        progress(100)
-      }
-    }    
+  job('make.sandwich') {
+    log.info("JOB (#{id}) Make sandwich with #{data[:bread]} bread")
+    
+    job.started!
+    job.progress(0)
+    job.progress(10)
+    sleep(1)
+    job.progress(20)
+    sleep(5)
+    job.progress(90)
+    job.progress(100)
+    job.finished!
   }
+  
 }
