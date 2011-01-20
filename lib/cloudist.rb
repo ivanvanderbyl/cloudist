@@ -8,6 +8,7 @@ require "digest/md5"
 
 $:.unshift File.dirname(__FILE__)
 require "cloudist/core_ext/string"
+require "cloudist/core_ext/object"
 require "cloudist/errors"
 require "cloudist/utils"
 require "cloudist/queues/basic_queue"
@@ -19,6 +20,7 @@ require "cloudist/request"
 require "cloudist/callback_methods"
 require "cloudist/listener"
 require "cloudist/callback"
+require "cloudist/callbacks/error_callback"
 require "cloudist/job"
 require "cloudist/worker"
 
