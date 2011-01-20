@@ -1,11 +1,11 @@
 require File.expand_path(File.dirname(__FILE__) + '../../spec_helper')
 
 describe Cloudist::Payload do
-  it "should raise bad payload error unless data is a hash" do
-    lambda {
-      Cloudist::Payload.new([1,2,3])
-    }.should raise_error(Cloudist::BadPayload)
-  end
+  # it "should raise bad payload error unless data is a hash" do
+  #   lambda {
+  #     Cloudist::Payload.new([1,2,3])
+  #   }.should raise_error(Cloudist::BadPayload)
+  # end
   
   it "should accept a hash for data" do
     lambda {
@@ -15,10 +15,10 @@ describe Cloudist::Payload do
   
   it "should prepare headers" do
     payload = Cloudist::Payload.new({:bread => 'white'})
-    payload.body.should == {"bread"=>"white"}
+    payload.body.should == {:bread => "white"}
     payload.headers.has_key?(:ttl).should be_true
-    payload.headers.has_key?(:content_type).should be_true
-    payload.headers[:content_type].should == "application/json"
+    # payload.headers.has_key?(:content_type).should be_true
+    # payload.headers[:content_type].should == "application/json"
     payload.headers.has_key?(:published_on).should be_true
     payload.headers.has_key?(:event_hash).should be_true
     payload.headers.has_key?(:message_id).should be_true
@@ -26,24 +26,24 @@ describe Cloudist::Payload do
   
   it "should extract published_on from data" do
     payload = Cloudist::Payload.new({:bread => 'white', :published_on => 12345678})
-    payload.body.should == {"bread"=>"white"}
+    payload.body.should == {:bread=>"white"}
     payload.headers[:published_on].should == "12345678"
   end
   
   it "should extract custom event hash from data" do
     payload = Cloudist::Payload.new({:bread => 'white', :event_hash => 'foo'})
-    payload.body.should == {"bread"=>"white"}
+    payload.body.should == {:bread=>"white"}
     payload.headers[:event_hash].should == "foo"
   end
   
   it "should parse JSON message" do
-    payload = Cloudist::Payload.new({:bread => 'white', :event_hash => 'foo'}.to_json)
-    payload.body.should == {"bread"=>"white"}
+    payload = Cloudist::Payload.new(Marshal.dump({:bread => 'white', :event_hash => 'foo'}))
+    payload.body.should == {:bread => "white"}
   end
   
   it "should parse custom headers" do
-    payload = Cloudist::Payload.new({:bread => 'white', :event_hash => 'foo'}.to_json, {:published_on => 12345})
-    payload.parse_custom_headers.should == {:published_on=>12345, :event_hash=>"foo", :content_type=>"application/json", :message_id=>"foo", :ttl=>300}
+    payload = Cloudist::Payload.new(Marshal.dump({:bread => 'white', :event_hash => 'foo'}), {:published_on => 12345})
+    payload.parse_custom_headers.should == {:published_on=>12345, :event_hash=>"foo", :message_id=>"foo", :ttl=>300}
   end
   
   it "should create a unique event hash" do
@@ -65,10 +65,10 @@ describe Cloudist::Payload do
   
   it "should format payload for sending" do
     payload = Cloudist::Payload.new({:bread => 'white'}, {:event_hash => 'foo', :message_type => 'reply'})
-    json, popts = payload.formatted
+    body, popts = payload.formatted
     headers = popts[:headers]
     
-    json.should == "{\"bread\":\"white\"}"
+    body.should == Marshal.dump({:bread => 'white'})
     headers[:ttl].should == "300"
     headers[:message_type].should == 'reply'
   end
@@ -119,8 +119,13 @@ describe Cloudist::Payload do
   end
   
   it "should allow custom headers to be set" do
-    payload = Cloudist::Payload.new({:bread => 'white'}, {:reply_type => 'event'})
-    payload.headers[:reply_type].should == 'event'
+    payload = Cloudist::Payload.new({:bread => 'white'}, {:message_type => 'event'})
+    payload.headers[:message_type].should == 'event'
+  end
+  
+  it "should be able to transport an error" do
+    e = ArgumentError.new("FAILED")
+    payload = Cloudist::Payload.new(e, {:message_type => 'error'})
   end
   
 end
