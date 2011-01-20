@@ -118,10 +118,14 @@ module Cloudist
     # will return all responses regardless of job id so you can use the job
     # id to lookup a database record to update etc.
     # When given a job instance it will only return messages from that job.
-    def listen(job_or_queue_name, &block)
-      _listener = Cloudist::Listener.new(job_or_queue_name)
-      _listener.subscribe(&block)
-      return _listener
+    def listen(*queue_names, &block)
+      @@listeners ||= []
+      queue_names.each do |job_or_queue_name|
+        _listener = Cloudist::Listener.new(job_or_queue_name)
+        _listener.subscribe(&block)
+        @@listeners << _listener
+      end
+      return @@listeners
     end
     
     # Enqueues a job.
