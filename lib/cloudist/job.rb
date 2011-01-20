@@ -56,16 +56,17 @@ module Cloudist
     end
     
     def safely(&blk)
-      begin
-        yield
-      rescue Exception => e
-        handle_error(e)
-      end
+      # begin
+      yield
+    rescue Exception => e
+      handle_error(e)
+      # end
+      # result
     end
     
     # This will transfer the Exception object to the client
     def handle_error(e)
-      reply({:exception_class => e.name, :message => e.message, :backtrace => e.backtrace}, {:message_type => 'error'})
+      reply({:exception_class => e.class.name, :message => e.message, :backtrace => e.backtrace}, {:message_type => 'error'})
     end
     
     def method_missing(meth, *args, &blk)
