@@ -16,7 +16,6 @@ require "cloudist/queues/reply_queue"
 require "cloudist/publisher"
 require "cloudist/payload"
 require "cloudist/request"
-require "cloudist/worker"
 require "cloudist/callback_methods"
 require "cloudist/listener"
 require "cloudist/callback"
@@ -51,15 +50,28 @@ module Cloudist
 
     # Define a worker. Must be called inside start loop
     # 
-    # worker {
-    #   job('make.sandwich') {}
-    # }
+    #   worker {
+    #     job('make.sandwich') {}
+    #   }
     # 
-    # Refer to examples.
-    def worker(options = {}, &block)
-      _worker = Cloudist::Worker.new(options)
-      _worker.instance_eval(&block)
-      return _worker
+    # REMOVED
+    def worker(&block)
+      raise NotImplementedError, "This DSL format has been removed. Please use job('make.sandwich') {} instead."
+    end
+    
+    # Defines a job handler (GenericWorker)
+    # 
+    #   job('make.sandwich') {
+    #     job.started!
+    #     # Work hard
+    #     sleep(5)
+    #     job.finished!
+    #   }
+    # 
+    # Refer to sandwich_worker.rb example
+    # 
+    def job(queue_name, &block)
+      register_worker(queue_name, &block)
     end
     
     # Registers a worker class to handle a specific queue
