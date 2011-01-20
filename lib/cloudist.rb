@@ -24,6 +24,9 @@ require "cloudist/job"
 
 module Cloudist
   class << self
+    
+    @@workers = {}
+    
     # Start the Cloudist loop
     # 
     #   Cloudist.start {
@@ -57,6 +60,57 @@ module Cloudist
       _worker = Cloudist::Worker.new(options)
       _worker.instance_eval(&block)
       return _worker
+    end
+    
+    # Registers a worker class to handle a specific queue
+    # 
+    #   Cloudist.handle('make.sandwich', 'eat.sandwich').with(MyWorker)
+    # 
+    # A standard worker would look like this:
+    #   
+    #   class MyWorker < Cloudist::Worker
+    #     def process
+    #       log.debug(data.inspect)
+    #     end
+    #   end
+    # 
+    # A new instance of this worker will be created everytime a job arrives
+    # 
+    # Refer to examples.
+    def handle(*queue_names)
+      class << queue_names
+        def with(handler)
+          self.each do |queue_name|
+            Cloudist.register_worker(queue_name.to_s, handler)
+          end
+        end
+      end
+      queue_names
+    end
+    
+    def register_worker(queue_name, klass = nil, &block)
+      job_queue = JobQueue.new(queue_name)
+      job_queue.subscribe do |request|
+        j = Job.new(request.payload.dup)
+        EM.defer do
+          begin
+            if block_given?
+              j.instance_eval(&block)
+            elsif klass
+              worker_instance = klass.new(j, job_queue.q)
+              worker_instance.process
+            end
+            finished = Time.now.utc.to_i
+            log.debug("Finished Job in #{finished - request.start} seconds")
+                        
+          rescue StandardError => e
+            j.handle_error(e)
+          end
+        end
+        j.cleanup
+      end
+      
+      ((@@workers[queue_name.to_s] ||= []) << job_queue).uniq!
     end
     
     # Accepts either a queue name or a job instance returned from enqueue.
@@ -136,6 +190,14 @@ module Cloudist
     def signal_trap!
       ::Signal.trap('INT') { Cloudist.stop }
       ::Signal.trap('TERM'){ Cloudist.stop }
+    end
+    
+    def workers
+      @@workers
+    end
+    
+    def remove_workers
+      @@workers = {}
     end
     
   end

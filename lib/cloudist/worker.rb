@@ -1,23 +1,26 @@
 module Cloudist
   class Worker
     
-    attr_reader :options
+    attr_reader :job, :queue
     
-    def initialize(options)
-      @options = options
+    def initialize(job, queue)
+      @job, @queue = job, queue
+    end
+    
+    def data
+      job.data
+    end
+    
+    def headers
+      job.headers
+    end
+    
+    def process
+      raise NotImplementedError, "Your worker class must subclass this method"
     end
     
     def log
       Cloudist.log
-    end
-    
-    def job(queue_name, &block)
-      q = JobQueue.new(queue_name)
-      q.subscribe do |request|
-        j = Job.new(request.payload.dup)
-        j.instance_eval(&block)
-        j.cleanup
-      end
     end
     
   end
