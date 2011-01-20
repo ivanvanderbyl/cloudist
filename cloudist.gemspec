@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = %q{cloudist}
-  s.version = "0.1.2"
+  s.version = "0.2.0"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Ivan Vanderbyl"]
-  s.date = %q{2011-01-18}
+  s.date = %q{2011-01-20}
   s.description = %q{Cloudist is a simple, highly scalable job queue for Ruby applications, it can run within Rails, DaemonKit or your own custom application. Refer to github page for examples}
   s.email = %q{ivanvanderbyl@me.com}
   s.extra_rdoc_files = [
@@ -26,21 +26,25 @@ Gem::Specification.new do |s|
     "Rakefile",
     "VERSION",
     "cloudist.gemspec",
+    "examples/extending_values.rb",
     "examples/queue_message.rb",
     "examples/sandwich_client.rb",
     "examples/sandwich_worker.rb",
+    "examples/sandwich_worker_with_class.rb",
     "lib/cloudist.rb",
-    "lib/cloudist/basic_queue.rb",
     "lib/cloudist/callback.rb",
     "lib/cloudist/callback_methods.rb",
+    "lib/cloudist/callbacks/error_callback.rb",
+    "lib/cloudist/core_ext/object.rb",
     "lib/cloudist/core_ext/string.rb",
     "lib/cloudist/errors.rb",
     "lib/cloudist/job.rb",
-    "lib/cloudist/job_queue.rb",
     "lib/cloudist/listener.rb",
     "lib/cloudist/payload.rb",
     "lib/cloudist/publisher.rb",
-    "lib/cloudist/reply_queue.rb",
+    "lib/cloudist/queues/basic_queue.rb",
+    "lib/cloudist/queues/job_queue.rb",
+    "lib/cloudist/queues/reply_queue.rb",
     "lib/cloudist/request.rb",
     "lib/cloudist/utils.rb",
     "lib/cloudist/worker.rb",
@@ -48,6 +52,7 @@ Gem::Specification.new do |s|
     "spec/cloudist/job_spec.rb",
     "spec/cloudist/payload_spec.rb",
     "spec/cloudist/request_spec.rb",
+    "spec/cloudist/utils_spec.rb",
     "spec/cloudist_spec.rb",
     "spec/core_ext/string_spec.rb",
     "spec/spec_helper.rb"
@@ -58,13 +63,16 @@ Gem::Specification.new do |s|
   s.rubygems_version = %q{1.3.7}
   s.summary = %q{Super fast job queue using AMQP}
   s.test_files = [
+    "examples/extending_values.rb",
     "examples/queue_message.rb",
     "examples/sandwich_client.rb",
     "examples/sandwich_worker.rb",
+    "examples/sandwich_worker_with_class.rb",
     "spec/cloudist/basic_queue_spec.rb",
     "spec/cloudist/job_spec.rb",
     "spec/cloudist/payload_spec.rb",
     "spec/cloudist/request_spec.rb",
+    "spec/cloudist/utils_spec.rb",
     "spec/cloudist_spec.rb",
     "spec/core_ext/string_spec.rb",
     "spec/spec_helper.rb"
