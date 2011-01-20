@@ -38,6 +38,13 @@ module Cloudist
           end
         end
         
+        if callbacks.has_key?('error')
+          callbacks['error'].each do |c|
+            # c.call(payload)
+            
+          end
+        end
+        
         if callbacks.has_key?(key)
           callbacks_to_call = callbacks[key]
           callbacks_to_call.each do |c|
@@ -57,7 +64,12 @@ module Cloudist
         # callback should in format of "event:started" or "progress"
         key = [meth.to_s, args.shift].compact.join(':')
         
-        (@callbacks[key] ||= []) << Callback.new(blk)
+        case meth.to_sym
+        when :error
+          (@callbacks[key] ||= []) << ErrorCallback.new(blk)
+        else
+          (@callbacks[key] ||= []) << Callback.new(blk)
+        end
       else
         super
       end
