@@ -6,15 +6,16 @@ module Cloudist
     
     attr_reader :body, :publish_opts, :headers
 
-    def initialize(data_hash_or_json, headers = {}, publish_opts = {})
+    def initialize(body, headers = {}, publish_opts = {})
       @publish_opts, @headers = publish_opts, headers
       @published = false
       
-      data_hash_or_json = parse_message(data_hash_or_json) if data_hash_or_json.is_a?(String)
+      body = parse_message(body) if body.is_a?(String)
       
-      raise Cloudist::BadPayload, "Expected Hash for payload" unless data_hash_or_json.is_a?(Hash)
+      # raise Cloudist::BadPayload, "Expected Hash for payload" unless body.is_a?(Hash)
 
-      @body = HashWithIndifferentAccess.new(data_hash_or_json)
+      @body = body
+      # HashWithIndifferentAccess.new(body)
       update_headers
     end
 
@@ -22,7 +23,7 @@ module Cloudist
     def formatted
       update_headers
       
-      [body.to_json, publish_opts]
+      [encode_message(body), publish_opts]
     end
     
     def id
@@ -50,8 +51,8 @@ module Cloudist
     
     def extract_custom_headers
       raise StaleHeadersError, "Headers cannot be changed because payload has already been published" if published?
-      headers[:published_on] ||= body.delete('published_on') || Time.now.utc.to_i
-      headers[:ttl] ||= body.delete('ttl') || Cloudist::DEFAULT_TTL
+      headers[:published_on] ||= body.is_a?(Hash) && body.delete(:published_on) || Time.now.utc.to_i
+      headers[:ttl] ||= body.is_a?(Hash) && body.delete('ttl') || Cloudist::DEFAULT_TTL
 
       # this is the event hash that gets transferred through various publish/reply actions
       headers[:event_hash] ||= id
@@ -60,7 +61,7 @@ module Cloudist
       headers[:message_id] ||= id
       
       # We use JSON for message transport exclusively
-      headers[:content_type] ||= 'application/json'
+      # headers[:content_type] ||= 'application/json'
       
       # headers[:headers][:message_type] = 'event'
        # ||= body.delete('message_type') || 'reply'
@@ -110,7 +111,7 @@ module Cloudist
     end
     
     def event_hash
-      @event_hash ||= headers[:event_hash] || body.delete('event_hash') || create_event_hash
+      @event_hash ||= headers[:event_hash] || body.is_a?(Hash) && body.delete(:event_hash) || create_event_hash
     end
     
     def create_event_hash
@@ -119,8 +120,9 @@ module Cloudist
     end
     
     def parse_message(raw)
-      return { } unless raw
-      decode_json(raw)
+      # return { } unless raw
+      # decode_json(raw)
+      decode_message(raw)
     end
     
     def [](key)
@@ -135,6 +137,14 @@ module Cloudist
       return if published?
       @published = true
       freeze!
+    end
+    
+    def method_missing(meth, *args, &blk)
+      if body.is_a?(Hash) && body.has_key?(meth)
+        return body[meth]
+      else
+        super
+      end
     end
     
   end
