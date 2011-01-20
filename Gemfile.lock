@@ -1,6 +1,6 @@
 GIT
-  remote: git://github.com/customink/moqueue.git
-  revision: 091a8f57e5c79b0b25e152b4d5230e4031797d62
+  remote: git://github.com/ivanvanderbyl/moqueue.git
+  revision: cf2108e3bee7730a6a57e0a95a4c17082c2b2603
   specs:
     moqueue (0.1.4)
       amqp
