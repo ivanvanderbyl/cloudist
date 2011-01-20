@@ -2,10 +2,10 @@ module Cloudist
   class Request
     attr_reader :queue_header, :qobj, :payload, :start, :headers
 
-    def initialize(queue, json_encoded_message, queue_header)
+    def initialize(queue, encoded_body, queue_header)
       @qobj, @queue_header = queue, queue_header
 
-      @payload = Cloudist::Payload.new(json_encoded_message.dup, queue_header.headers.dup)
+      @payload = Cloudist::Payload.new(encoded_body, queue_header.headers.dup)
       @headers = @payload.parse_custom_headers
 
       @start = Time.now.utc.to_i
