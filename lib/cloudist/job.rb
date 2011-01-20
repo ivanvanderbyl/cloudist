@@ -21,7 +21,7 @@ module Cloudist
       
     end
     
-    def reply(data, headers = {}, options = {})
+    def reply(body, headers = {}, options = {})
       options = {
         :echo => false
       }.update(options)
@@ -32,15 +32,15 @@ module Cloudist
       }.update(headers)
       
       # Echo the payload back
-      data.merge!(payload.body) if options[:echo] == true
+      # body.merge!(payload.body) if options[:echo] == true
       
-      reply_payload = Payload.new(data, headers)
+      reply_payload = Payload.new(body, headers)
       
       reply_queue = ReplyQueue.new(payload.reply_to)
       reply_queue.setup
       published_headers = reply_queue.publish_to_q(reply_payload)
       
-      log.debug("Replying: #{data.inspect} - Headers: #{published_headers.inspect}")
+      log.debug("Replying: #{body.inspect} HEADERS: #{headers.inspect}")
     end
     
     # Sends a progress update
@@ -66,7 +66,8 @@ module Cloudist
     
     # This will transfer the Exception object to the client
     def handle_error(e)
-      reply({:exception_class => e.class.name, :message => e.message, :backtrace => e.backtrace}, {:message_type => 'error'})
+      # reply({:exception_class => e.class.name, :message => e.message, :backtrace => e.backtrace}, {:message_type => 'error'})
+      reply({:exception => e}, {:message_type => 'error'})
     end
     
     def method_missing(meth, *args, &blk)
