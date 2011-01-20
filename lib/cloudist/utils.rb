@@ -41,6 +41,14 @@ module Cloudist
       "%04x%04x%04x%04x%04x%06x%06x" % values
     end
     
+    def encode_message(object)
+      Marshal.dump(object).to_s
+    end
+    
+    def decode_message(string)
+      Marshal.load(string)
+    end
+    
     def decode_json(string)
       if defined? ActiveSupport::JSON
         ActiveSupport::JSON.decode string
