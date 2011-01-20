@@ -13,7 +13,7 @@ describe Cloudist::Utils do
     Cloudist::Utils.stats_prefix('eat.sandwich').should == 'temp.stats.eat.sandwich'
   end
   
-  it "should generate queue name" do
-    Cloudist::Utils.generate_queue('test').should == ''
-  end
+  # it "should generate queue name" do
+  #   Cloudist::Utils.generate_queue('test').should == ''
+  # end
 end
