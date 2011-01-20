@@ -18,15 +18,25 @@ Cloudist.signal_trap!
 Cloudist.start {
   
   log.info("Dispatching sandwich making job...")
-  job = enqueue('make.sandwich', {:bread => 'white'})
+  
+  unless ARGV.empty?
+    job_count = ARGV.pop.to_i
+    job_count.times { |i| enqueue('make.sandwich', {:bread => 'white', :sandwich_number => i})}
+  end
+  
+  
+  # enqueue('eat.sandwich', {:sandwich => job.id})
   # enqueue('make.sandwich', {:bread => 'brown'})
-  
-  log.info("Queued job with ID: #{job.id}")
-  
+    
   # Listen to all sandwich jobs
-  listen('make.sandwich') {
+  listen('make.sandwich', 'eat.sandwich') {
     everything {
-      Cloudist.log.info("Job ID: #{job_id}")
+      Cloudist.log.info("#{headers[:message_type]} - Job ID: #{job_id}")
+    }
+    
+    error {
+      Cloudist.log.error(data.inspect)
+      Cloudist.stop
     }
     
     progress {
@@ -39,6 +49,7 @@ Cloudist.start {
     
     event('finished'){
       Cloudist.log.info("Finished making sandwich at #{Time.now.to_s}")
+      Cloudist.stop
     }
   }
   
