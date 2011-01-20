@@ -24,4 +24,10 @@ module Cloudist
     end
     
   end
+  
+  class GenericWorker < Worker
+    def process(&block)
+      instance_eval(&block)
+    end
+  end
 end
