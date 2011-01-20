@@ -1,5 +1,5 @@
 module Cloudist
-  class JobQueue < BasicQueue
+  class JobQueue < Cloudist::Queues::BasicQueue
     attr_reader :prefetch
 
     def initialize(queue_name, opts={})
@@ -20,7 +20,7 @@ module Cloudist
         begin
           yield request if block_given?
         ensure
-          request.ack unless amqp_opts[:auto_ack] == false
+          request.ack unless amqp_opts[:auto_ack] == false || Cloudist.closing?
         end
       end
     end
