@@ -4,10 +4,10 @@ module Cloudist
       @payload = payload
       
       case source.arity
-      when 0
-        instance_exec(&source)
       when 1
         instance_exec(payload.exception, &source)
+      else
+        instance_exec(&source)
       end
     end
   end
