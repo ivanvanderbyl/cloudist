@@ -115,11 +115,13 @@ module Cloudist
             elsif klass
               worker_instance = klass.new(j, job_queue.q)
               worker_instance.process
+            else
+              raise RuntimeError, "Failed to register worker, I need either a handler class or block."
             end
             finished = Time.now.utc.to_i
             log.debug("Finished Job in #{finished - request.start} seconds")
             
-          rescue StandardError => e
+          rescue Exception => e
             j.handle_error(e)
           end
         end
@@ -156,11 +158,11 @@ module Cloudist
 
     # Call this at anytime inside the loop to exit the app.
     def stop_safely
-      ::EM.add_timer(0.2) { 
+      # ::EM.add_timer(0.2) { 
         ::AMQP.stop { 
           ::EM.stop
         }
-      }
+      # }
     end
     
     alias :stop :stop_safely
