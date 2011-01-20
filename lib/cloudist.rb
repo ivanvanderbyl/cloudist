@@ -20,6 +20,7 @@ require "cloudist/callback_methods"
 require "cloudist/listener"
 require "cloudist/callback"
 require "cloudist/job"
+require "cloudist/worker"
 
 module Cloudist
   class << self
@@ -107,14 +108,15 @@ module Cloudist
         EM.defer do
           begin
             if block_given?
-              j.instance_eval(&block)
+              worker_instance = GenericWorker.new(j, job_queue.q)
+              worker_instance.process(&block)
             elsif klass
               worker_instance = klass.new(j, job_queue.q)
               worker_instance.process
             end
             finished = Time.now.utc.to_i
             log.debug("Finished Job in #{finished - request.start} seconds")
-                        
+            
           rescue StandardError => e
             j.handle_error(e)
           end
