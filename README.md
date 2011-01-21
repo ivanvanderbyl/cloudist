@@ -1,16 +1,10 @@
 Cloudist
 ========
 
-Cloudist is a super fast job queue for high demand and scalable tasks. It uses AMQP (RabbitMQ mainly) for message store are
-distribution, while providing a simple DSL for handling jobs and responses.
+Cloudist is a simple, highly scalable job queue for Ruby applications, it can run within Rails, DaemonKit or your own custom application. Cloudist uses AMQP (RabbitMQ mainly) for transport and provides a simple DSL for queuing jobs and receiving responses including logs, exceptions and job progress.
 
-Cloudist can be used within Rails or just about any Ruby app to distribute long running tasks, such as encoding a video, generating PDFs, scraping site data
-or even just sending emails. Unlike other job queues (DelayedJob etc) Cloudist does not load your entire Rails stack into memory for every worker, and it is not designed to, instead it
-expects all the data your worker requires to be sent in the initial job request. This means your workers stay slim and can scale very quickly and even run on EC2 micros outside your applications
-network without any further configuration.
-
-Another way Cloudist differs from other AMQP based job queues like Minion is it allows workers to report events, logs, system stats and replies back to the application which distributed the
-job, and unlike database based job queues, there is almost no delay between messages, except network latency of course.
+Cloudist can be used to distribute long running tasks such as encoding a video, generating PDFs, scraping site data
+or even just sending emails. Unlike other job queues (DelayedJob etc) Cloudist does not load your entire Rails stack into memory for every worker, and it is not designed to, instead it expects all the data your worker requires to complete a job to be sent in the initial job request. This means your workers stay slim and can scale very quickly and even run on EC2 micros outside your applications environment without any further configuration.
 
 Installation
 ------------
@@ -24,14 +18,12 @@ Or if your app has a Gemfile:
 Usage
 -----
 
-Cloudist requires an EventMachine reactor loop and an AMQP connection, so if your application is already using one, or your web server supplies one (for example Thin) these examples will work
-out of the box. Otherwise simply wrap everything inside this block:
+Cloudist requires an EventMachine reactor loop and an AMQP connection, so if your application is already using one, or your web server supplies one (for example Thin) these examples will work out of the box. Otherwise simply wrap everything inside this block:
     
-    Cloudist.settings = {:user => 'guest'} # Standard AMQP settings
     Cloudist.start {
       # usual stuff here
-      worker {
-        # define a worker
+      job('make.sandwich') {
+        # define a job handler
       }
     }
     
@@ -42,53 +34,75 @@ In your worker:
     Cloudist.start {
       log.info("Started Worker")
 
-      worker {
-        job('make.sandwich') {
-          log.info("JOB (#{id}) Make sandwich with #{data[:bread]} bread")
-          log.debug(data.inspect)
+      job('make.sandwich') {
+        log.info("JOB (#{id}) Make sandwich with #{data[:bread]} bread")
 
-          # Do long running tasks here
-          EM.defer {
-            progress(0)
-            started!
-            progress(10)
-            sleep(1)
-            progress(20)
-            sleep(5)
-            progress(90)
-            sleep(1)
-            finished!
-            progress(100)
-          }
-        }    
+        job.started!
+
+        (1..20).each do |i|
+          job.progress(i * 5)
+          sleep(1)
+        end
+        job.finished!
       }
+
     }
     
 In your application:
     
     Cloudist.start {
-      # Enqueue sandwich job      
+
       log.info("Dispatching sandwich making job...")
-      enqueue('make.sandwich', {:bread => 'white'})
+      
+      Cloudist.enqueue('make.sandwich', {:bread => 'white', :sandwich_number => 1})
 
       # Listen to all sandwich jobs
       listen('make.sandwich') {
+        everything {
+          Cloudist.log.info("#{headers[:message_type]} - Job ID: #{job_id}")
+        }
+        
+        # This will contain any exceptions which are raised while processing the job, which will halt the job
+        error { |e|
+          Cloudist.log.error(e.inspect)
+          Cloudist.log.error(e.backtrace.inspect)
+          
+          # Exit on failure
+          Cloudist.stop
+        }
+        
+        # Process progress updates
         progress {
           Cloudist.log.info("Progress: #{data[:progress]}")
         }
-
+        
         event('started') {
           Cloudist.log.info("Started making sandwich at #{Time.now.to_s}")
         }
 
         event('finished'){
           Cloudist.log.info("Finished making sandwich at #{Time.now.to_s}")
+          # Exit when done
+          Cloudist.stop
         }
       }
 
     }
+    
 
 If your application provides an AMQP.start loop already, you can skip the Cloudist.start
+
+Configuration
+-------------
+
+The only configuration required to get going are the AMQP settings, these can be set in two ways:
+
+1. Using the `AMQP_URL` environment variable with value of `amqp://username:password@localhost:5672/vhost`
+
+2. Updating the settings hash manually:
+
+    Cloudist.settings = {:user => 'guest', :pass => 'password', :vhost => '/', :host => 'localhost', :port => 5672}
+
 
 Acknowledgements
 -------
