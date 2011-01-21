@@ -100,12 +100,12 @@ The only configuration required to get going are the AMQP settings, these can be
 1. Using the `AMQP_URL` environment variable with value of `amqp://username:password@localhost:5672/vhost`
 
 2. Updating the settings hash manually:
-
+    
     Cloudist.settings = {:user => 'guest', :pass => 'password', :vhost => '/', :host => 'localhost', :port => 5672}
-
+    
 
 Acknowledgements
--------
+----------------
 
 Portions of this gem are based on code from the following projects:
 
@@ -123,6 +123,11 @@ Contributing to Cloudist
 * Commit and push until you are happy with your contribution
 * Make sure to add tests for it. This is important so I don't break it in a future version unintentionally.
 * Please try not to mess with the Rakefile, version, or history. If you want to have your own version, or is otherwise necessary, that is fine, but please isolate to its own commit so I can cherry-pick around it.
+
+Authors
+-------
+
+Ivan Vanderbyl - [@IvanVanderbyl](http://twitter.com/IvanVanderbyl) - [Blog](http://ivanvanderbyl.github.com/)
     
 Copyright
 ---------
