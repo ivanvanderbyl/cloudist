@@ -4,7 +4,7 @@ module Cloudist
     
     attr_reader :job_queue_name, :job_id, :callbacks
     
-    @@valid_callbacks = ["event", "progress", "reply", "update", "error"]
+    @@valid_callbacks = ["event", "progress", "reply", "update", "error", "log", "runtime"]
     
     def initialize(job_or_queue_name)
       @callbacks = {}
@@ -37,12 +37,6 @@ module Cloudist
             c.call(payload)
           end
         end
-        
-        # if callbacks.has_key?('error')
-        #   callbacks['error'].each do |c|
-        #     c.call(payload)
-        #   end
-        # end
         
         if callbacks.has_key?(key)
           callbacks_to_call = callbacks[key]
