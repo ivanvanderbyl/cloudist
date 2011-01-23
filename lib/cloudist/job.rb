@@ -66,8 +66,8 @@ module Cloudist
     
     # This will transfer the Exception object to the client
     def handle_error(e)
-      # reply({:exception_class => e.class.name, :message => e.message, :backtrace => e.backtrace}, {:message_type => 'error'})
-      reply({:exception => e}, {:message_type => 'error'})
+      reply({:exception => e.class.name, :message => e.message, :backtrace => e.backtrace}, {:message_type => 'error'})
+      # reply({:exception => e}, {:message_type => 'error'})
     end
     
     def method_missing(meth, *args, &blk)
