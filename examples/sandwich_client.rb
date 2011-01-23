@@ -34,6 +34,10 @@ Cloudist.start {
       Cloudist.log.info("#{headers[:message_type]} - Job ID: #{job_id}")
     }
     
+    logger { |message|
+      
+    }
+    
     error { |e|
       Cloudist.log.error(e.inspect)
       Cloudist.log.error(e.backtrace.inspect)
