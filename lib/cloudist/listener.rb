@@ -38,12 +38,11 @@ module Cloudist
           end
         end
         
-        if callbacks.has_key?('error')
-          callbacks['error'].each do |c|
-            # c.call(payload)
-            
-          end
-        end
+        # if callbacks.has_key?('error')
+        #   callbacks['error'].each do |c|
+        #     c.call(payload)
+        #   end
+        # end
         
         if callbacks.has_key?(key)
           callbacks_to_call = callbacks[key]
