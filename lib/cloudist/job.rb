@@ -40,7 +40,8 @@ module Cloudist
       reply_queue.setup
       published_headers = reply_queue.publish_to_q(reply_payload)
       
-      log.debug("Replying: #{body.inspect} HEADERS: #{headers.inspect}")
+      # log.debug("Replying: #{body.inspect} HEADERS: #{headers.inspect}")
+      reply_payload
     end
     
     # Sends a progress update
