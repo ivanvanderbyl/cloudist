@@ -124,7 +124,7 @@ module Cloudist
           ensure
             finished = Time.now.utc.to_f
             log.debug("Finished Job in #{finished - request.start} seconds")
-            j.reply(:runtime => (finished - request.start), {:message_type => 'runtime'})
+            j.reply({:runtime => (finished - request.start)}, {:message_type => 'runtime'})
           end
         end
         j.cleanup
