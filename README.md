@@ -101,6 +101,7 @@ The only configuration required to get going are the AMQP settings, these can be
 
 2. Updating the settings hash manually:
     
+    
     Cloudist.settings = {:user => 'guest', :pass => 'password', :vhost => '/', :host => 'localhost', :port => 5672}
     
 
@@ -128,7 +129,7 @@ Authors
 -------
 
 Ivan Vanderbyl - [@IvanVanderbyl](http://twitter.com/IvanVanderbyl) - [Blog](http://ivanvanderbyl.github.com/)
-    
+
 Copyright
 ---------
 
