@@ -119,11 +119,12 @@ module Cloudist
             else
               raise RuntimeError, "Failed to register worker, I need either a handler class or block."
             end
-            finished = Time.now.utc.to_i
-            log.debug("Finished Job in #{finished - request.start} seconds")
-            
           rescue Exception => e
             j.handle_error(e)
+          ensure
+            finished = Time.now.utc.to_f
+            log.debug("Finished Job in #{finished - request.start} seconds")
+            j.reply(:runtime => (finished - request.start), {:message_type => 'runtime'})
           end
         end
         j.cleanup
