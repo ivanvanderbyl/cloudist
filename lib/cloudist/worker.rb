@@ -5,6 +5,9 @@ module Cloudist
     
     def initialize(job, queue)
       @job, @queue = job, queue
+      
+      # Do custom initialization
+      self.setup if self.respond_to?(:setup)
     end
     
     def data
