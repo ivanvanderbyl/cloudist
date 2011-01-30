@@ -24,7 +24,7 @@ class SandwichWorker < Cloudist::Worker
       job.progress(i * 5)
       sleep(1)
       
-      raise ArgumentError, "NOT GOOD!" if i == 4
+      # raise ArgumentError, "NOT GOOD!" if i == 4
     end
     job.finished!
   end
