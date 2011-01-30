@@ -48,7 +48,7 @@ module Cloudist
     def start(options = {}, &block)
       config = settings.update(options)
       AMQP.start(config) do
-        self.instance_eval(&block)
+        self.instance_eval(&block) if block_given?
       end
     end
 
@@ -74,8 +74,13 @@ module Cloudist
     # 
     # Refer to sandwich_worker.rb example
     # 
-    def job(queue_name, &block)
-      register_worker(queue_name, &block)
+    def job(queue_name)
+      if block_given?
+        block = Proc.new
+        register_worker(queue_name, &block)
+      else
+        raise ArgumentError, "You must supply a block as the last argument"
+      end
     end
     
     # Registers a worker class to handle a specific queue
@@ -125,9 +130,9 @@ module Cloudist
             finished = Time.now.utc.to_f
             log.debug("Finished Job in #{finished - request.start} seconds")
             j.reply({:runtime => (finished - request.start)}, {:message_type => 'runtime'})
+            j.cleanup
           end
         end
-        j.cleanup
       end
       
       ((@@workers[queue_name.to_s] ||= []) << job_queue).uniq!

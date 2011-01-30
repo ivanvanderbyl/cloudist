@@ -34,7 +34,7 @@ Cloudist.start {
       Cloudist.log.info("#{headers[:message_type]} - Job ID: #{job_id}")
     }
     
-    logger { |message|
+    log { |message|
       
     }
     

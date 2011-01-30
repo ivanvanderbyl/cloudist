@@ -39,8 +39,43 @@ module Cloudist
         s += " exchange=#{ex.name}" if ex
         s
       end
-
+      
       def subscribe(amqp_opts={}, opts={})
+        setup
+        print_status
+        
+        q.pop { |queue_header, json_encoded_message|
+          unless json_encoded_message
+            # queue was empty
+            p [Time.now, :queue_empty!]
+
+            # try again in 1 second
+            EM.add_timer(1) { q.pop }
+          else
+            request = Cloudist::Request.new(self, json_encoded_message, queue_header)
+
+            begin
+              raise Cloudist::ExpiredMessage if request.expired?
+              yield request if block_given?
+              # finished = Time.now.utc.to_i
+              # log.debug("Finished Job in #{finished - request.start} seconds")
+
+            rescue Cloudist::ExpiredMessage
+              log.error "AMQP Message Timeout: #{tag} ttl=#{request.ttl} age=#{request.age}"
+              request.ack if amqp_opts[:ack]
+
+            rescue => e
+              request.ack if amqp_opts[:ack]
+              Cloudist.handle_error(e)
+            end
+
+            # get the next message in the queue
+            q.pop
+          end
+        }
+      end
+
+      def subscribe_old(amqp_opts={}, opts={})
         setup
         print_status
         q.subscribe(amqp_opts) do |queue_header, json_encoded_message|
