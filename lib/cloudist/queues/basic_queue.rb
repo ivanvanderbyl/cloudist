@@ -40,7 +40,7 @@ module Cloudist
         s
       end
       
-      def subscribe(amqp_opts={}, opts={})
+      def subscribe_pop(amqp_opts={}, opts={})
         setup
         print_status
         
@@ -75,7 +75,7 @@ module Cloudist
         }
       end
 
-      def subscribe_old(amqp_opts={}, opts={})
+      def subscribe(amqp_opts={}, opts={})
         setup
         print_status
         q.subscribe(amqp_opts) do |queue_header, json_encoded_message|
