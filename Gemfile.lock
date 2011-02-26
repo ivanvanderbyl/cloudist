@@ -1,4 +1,11 @@
 GIT
+  remote: git://github.com/ivanvanderbyl/amqp.git
+  revision: f3285bda74674b2f52c6288c81cba70f971ef3a1
+  specs:
+    amqp (0.8.0)
+      eventmachine (>= 0.12.4)
+
+GIT
   remote: git://github.com/ivanvanderbyl/moqueue.git
   revision: cf2108e3bee7730a6a57e0a95a4c17082c2b2603
   specs:
@@ -8,9 +15,7 @@ GIT
 GEM
   remote: http://rubygems.org/
   specs:
-    activesupport (3.0.3)
-    amqp (0.6.7)
-      eventmachine (>= 0.12.4)
+    activesupport (3.0.4)
     diff-lcs (1.1.2)
     eventmachine (0.12.10)
     git (1.2.5)
@@ -20,8 +25,7 @@ GEM
       git (>= 1.2.5)
       rake
     json (1.4.6)
-    mocha (0.9.10)
-      rake
+    mocha (0.9.12)
     rake (0.8.7)
     rcov (0.9.9)
     reek (1.2.8)
@@ -41,7 +45,7 @@ GEM
     ruby2ruby (1.2.5)
       ruby_parser (~> 2.0)
       sexp_processor (~> 3.0)
-    ruby_parser (2.0.5)
+    ruby_parser (2.0.6)
       sexp_processor (~> 3.0)
     sexp_processor (3.0.5)
 
@@ -50,7 +54,7 @@ PLATFORMS
 
 DEPENDENCIES
   activesupport (~> 3.0.3)
-  amqp (~> 0.6.7)
+  amqp!
   bundler (~> 1.0.0)
   i18n
   jeweler (~> 1.5.2)
