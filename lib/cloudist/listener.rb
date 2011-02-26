@@ -81,6 +81,8 @@ module Cloudist
       when :error
         
       when :log
+        method_and_args << payload.message
+        method_and_args << payload.level
         
       else
         method_and_args << data if method(method_and_args[0]).arity == 1
@@ -111,7 +113,7 @@ module Cloudist
       # :noop
     end
     
-    def log(o)
+    def log(message, level)
       # :noop
     end
     
