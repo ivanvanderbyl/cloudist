@@ -67,7 +67,6 @@ module Cloudist
           method_and_args = [key.shift]
         end
         method_and_args << key
-        method_and_args << payload.event_data? ? payload.event_data : nil
         
       when :progress
         method_and_args << payload.progress
