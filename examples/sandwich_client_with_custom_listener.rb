@@ -15,7 +15,31 @@ require "cloudist"
 
 
 class SandwichListener < Cloudist::Listener
-  listen_to "make.sandwich"
+  listen_to "make.sandwich", "eat.sandwich"
+  
+  before :find_command
+  
+  def find_command
+    puts "--- #{job_id}"
+  end
+  
+  def progress(i)
+    puts "Progress: %1d%" % i
+  end
+  
+  def runtime(seconds)
+    puts "Finished job in #{seconds} seconds"
+  end
+  
+  def event(type)
+    puts "Event: #{type}"
+  end
+  
+  def finished
+    puts "*** Finished ***"
+  end
+  
+  
   
 end
 
@@ -24,11 +48,12 @@ Cloudist.signal_trap!
 
 Cloudist.start {
   
-  log.info("Dispatching sandwich making job...")
-  
   unless ARGV.empty?
     job_count = ARGV.pop.to_i
-    job_count.times { |i| enqueue('make.sandwich', {:bread => 'white', :sandwich_number => i})}
+    job_count.times { |i| 
+      log.info("Dispatching sandwich making job...")
+      enqueue('make.sandwich', {:bread => 'white', :sandwich_number => i})
+    }
   end
   
   add_listener(SandwichListener)  
