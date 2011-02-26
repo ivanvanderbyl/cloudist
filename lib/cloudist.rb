@@ -157,7 +157,7 @@ module Cloudist
     # Returns Job instance
     # Use Job#id to reference job later on.
     def enqueue(job_queue_name, data = nil)
-      raise EnqueueError, "Incorrect arguments, you must include data when enquing job" if data.nil?
+      raise EnqueueError, "Incorrect arguments, you must include data when enqueuing job" if data.nil?
       # TODO: Detect if inside loop, if not use bunny sync
       Cloudist::Publisher.enqueue(job_queue_name, data)
     end
