@@ -143,14 +143,19 @@ module Cloudist
     # will return all responses regardless of job id so you can use the job
     # id to lookup a database record to update etc.
     # When given a job instance it will only return messages from that job.
+    # 
+    # DEPRECATED
+    # 
     def listen(*queue_names, &block)
-      @@listeners ||= []
-      queue_names.each do |job_or_queue_name|
-        _listener = Cloudist::Listener.new(job_or_queue_name)
-        _listener.subscribe(&block)
-        @@listeners << _listener
-      end
-      return @@listeners
+      raise NotImplementedError, "This DSL method has been removed. Please use add_listener"
+      
+      # @@listeners ||= []
+      # queue_names.each do |job_or_queue_name|
+      #   _listener = Cloudist::Listener.new(job_or_queue_name)
+      #   _listener.subscribe(&block)
+      #   @@listeners << _listener
+      # end
+      # return @@listeners
     end
     
     # Adds a listener class
