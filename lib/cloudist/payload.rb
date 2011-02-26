@@ -142,6 +142,8 @@ module Cloudist
     def method_missing(meth, *args, &blk)
       if body.is_a?(Hash) && body.has_key?(meth)
         return body[meth]
+      elsif key = meth.to_s.match(/(.+)(?:\?$)/).to_a.last
+        body.has_key?(key)
       else
         super
       end
