@@ -2,6 +2,7 @@ source "http://rubygems.org"
 
 gem "amqp", "~> 0.6.7"
 gem "json", "~> 1.4.6"
+gem "i18n"
 gem "activesupport", "~> 3.0.3"
 
 # Add dependencies to develop your gem here.
