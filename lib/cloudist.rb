@@ -8,6 +8,7 @@ require "digest/md5"
 $:.unshift File.dirname(__FILE__)
 require "cloudist/core_ext/string"
 require "cloudist/core_ext/object"
+require "cloudist/core_ext/class"
 require "cloudist/errors"
 require "cloudist/utils"
 require "cloudist/queues/basic_queue"
@@ -149,6 +150,22 @@ module Cloudist
         _listener.subscribe(&block)
         @@listeners << _listener
       end
+      return @@listeners
+    end
+    
+    # Adds a listener class
+    def add_listener(klass)
+      @@listeners ||= []
+      
+      raise ArgumentError, "Your listener must extend Cloudist::Listener" unless klass.superclass == Cloudist::Listener
+      raise ArgumentError, "Your listener must declare at least one queue to listen to. Use listen_to 'queue.name'" if klass.job_queue_names.nil?
+      
+      klass.job_queue_names.each do |queue_name|
+        klass.subscribe(queue_name)
+      end
+      
+      @@listeners << klass
+      
       return @@listeners
     end
     
