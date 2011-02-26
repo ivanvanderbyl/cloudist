@@ -1,5 +1,5 @@
-require 'cloudist/core_ext/kernel/singleton_class'
-require 'cloudist/core_ext/module/remove_method'
+require 'cloudist/core_ext/kernel'
+require 'cloudist/core_ext/module'
 
 # Extracted from ActiveSupport 3.0
 class Class
