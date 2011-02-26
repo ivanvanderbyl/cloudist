@@ -1,8 +1,9 @@
 GIT
   remote: git://github.com/ivanvanderbyl/amqp.git
-  revision: f3285bda74674b2f52c6288c81cba70f971ef3a1
+  revision: 2d54d21110b3ef61e05c1d0dddadb9d983f207ca
+  branch: feature/heartbeat
   specs:
-    amqp (0.8.0)
+    amqp (0.7.0)
       eventmachine (>= 0.12.4)
 
 GIT

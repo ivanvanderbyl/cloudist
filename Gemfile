@@ -1,6 +1,6 @@
 source :rubygems
 
-gem 'amqp',           :git => 'git://github.com/ivanvanderbyl/amqp.git'
+gem 'amqp',           :git => 'git://github.com/ivanvanderbyl/amqp.git', :branch => 'feature/heartbeat'
 gem "json",           "~> 1.4.6"
 gem "i18n"
 gem "activesupport",  "~> 3.0.3"
