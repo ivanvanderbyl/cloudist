@@ -164,11 +164,11 @@ module Cloudist
 
     # Call this at anytime inside the loop to exit the app.
     def stop_safely
-      # ::EM.add_timer(0.2) { 
+      ::EM.add_timer(0.2) { 
         ::AMQP.stop { 
           ::EM.stop
         }
-      # }
+      }
     end
     
     alias :stop :stop_safely
@@ -219,6 +219,8 @@ module Cloudist
       ::Signal.trap('INT') { Cloudist.stop }
       ::Signal.trap('TERM'){ Cloudist.stop }
     end
+    
+    alias :install_signal_trap :signal_trap!
     
     def workers
       @@workers
