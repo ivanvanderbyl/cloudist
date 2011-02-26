@@ -12,8 +12,5 @@ module Cloudist
       headers[:message_id]
     end
     
-    def runtime
-      
-    end
   end
 end
