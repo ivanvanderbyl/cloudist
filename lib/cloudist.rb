@@ -45,6 +45,8 @@ module Cloudist
     # * :host => 'localhost'
     # * :port => 5672
     # * :vhost => /
+    # * :heartbeat => 5
+    # * :logging => false
     # 
     # Refer to default config below for how to set these as defaults
     # 
@@ -62,6 +64,7 @@ module Cloudist
     #   }
     # 
     # REMOVED
+    # 
     def worker(&block)
       raise NotImplementedError, "This DSL format has been removed. Please use job('make.sandwich') {} instead."
     end
