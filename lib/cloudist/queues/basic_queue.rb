@@ -18,10 +18,16 @@ module Cloudist
       end
 
       def setup
-        return if @setup == true
+        return if @setup.eql?(true)
 
         @mq = MQ.new
         @q = @mq.queue(queue_name, opts)
+        #  do |queue, message_count, consumer_count|
+        #   puts "Queue #{queue.name} declared!"
+        #   puts "Message count: #{message_count}"
+        #   puts "Consumer count: #{consumer_count}"
+        # end
+        
         # if we don't specify an exchange name it defaults to the queue_name
         @ex = @mq.direct(opts[:exchange_name] || queue_name)
 
@@ -40,19 +46,20 @@ module Cloudist
         s
       end
       
+      # Not yet supported
       def subscribe_pop(amqp_opts={}, opts={})
         setup
         print_status
         
-        q.pop { |queue_header, json_encoded_message|
-          unless json_encoded_message
+        q.pop { |queue_header, encoded_message|
+          unless encoded_message
             # queue was empty
             p [Time.now, :queue_empty!]
 
             # try again in 1 second
             EM.add_timer(1) { q.pop }
           else
-            request = Cloudist::Request.new(self, json_encoded_message, queue_header)
+            request = Cloudist::Request.new(self, encoded_message, queue_header)
 
             begin
               raise Cloudist::ExpiredMessage if request.expired?
@@ -77,11 +84,11 @@ module Cloudist
 
       def subscribe(amqp_opts={}, opts={})
         setup
-        print_status
-        q.subscribe(amqp_opts) do |queue_header, json_encoded_message|
+        # print_status
+        q.subscribe(amqp_opts) do |queue_header, encoded_message|
           next if Cloudist.closing?
 
-          request = Cloudist::Request.new(self, json_encoded_message, queue_header)
+          request = Cloudist::Request.new(self, encoded_message, queue_header)
 
           begin
             raise Cloudist::ExpiredMessage if request.expired?

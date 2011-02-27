@@ -1,7 +1,10 @@
 require 'uri'
 require 'json' unless defined? ActiveSupport::JSON
+
+# $:.unshift "/Users/ivan/dev/ruby/amqp/lib"
 require "amqp"
 require "mq"
+
 require "logger"
 require "digest/md5"
 
@@ -42,6 +45,8 @@ module Cloudist
     # * :host => 'localhost'
     # * :port => 5672
     # * :vhost => /
+    # * :heartbeat => 5
+    # * :logging => false
     # 
     # Refer to default config below for how to set these as defaults
     # 
@@ -59,6 +64,7 @@ module Cloudist
     #   }
     # 
     # REMOVED
+    # 
     def worker(&block)
       raise NotImplementedError, "This DSL format has been removed. Please use job('make.sandwich') {} instead."
     end
@@ -223,7 +229,9 @@ module Cloudist
         :host => uri.host,
         :user => uri.user,
         :port => uri.port || 5672,
-        :pass => uri.password
+        :pass => uri.password,
+        :heartbeat => 5,
+        :logging => false
       }
     rescue Object => e
       raise "invalid AMQP_URL: (#{uri.inspect}) #{e.class} -> #{e.message}"

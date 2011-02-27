@@ -13,43 +13,48 @@ $:.unshift File.dirname(__FILE__) + '/../lib'
 require "rubygems"
 require "cloudist"
 
+$total_jobs = 0
 
 class SandwichListener < Cloudist::Listener
-  listen_to "make.sandwich", "eat.sandwich"
+  listen_to "make.sandwich"
   
   before :find_command
   
   def find_command
-    puts "--- #{job_id}"
+    # puts "--- #{job_id}"
   end
   
   def progress(i)
-    puts "Progress: %1d%" % i
+    # puts "Progress: %1d%" % i
   end
   
   def runtime(seconds)
-    puts "Finished job in #{seconds} seconds"
+    puts "#{job_id} Finished job in #{seconds} seconds"
+    $total_jobs -= 1
+    puts "--- #{$total_jobs} remaining"
   end
   
   def event(type)
-    puts "Event: #{type}"
+    # puts "Event: #{type}"
   end
   
   def finished
-    puts "*** Finished ***"
+    # puts "*** Finished ***"
+    if $total_jobs == 0
+      # Cloudist.stop
+    end
   end
-  
-  
   
 end
 
 
 Cloudist.signal_trap!
 
-Cloudist.start {
+Cloudist.start(:logging => false, :heartbeat => 60) {
   
   unless ARGV.empty?
     job_count = ARGV.pop.to_i
+    $total_jobs = job_count
     job_count.times { |i| 
       log.info("Dispatching sandwich making job...")
       enqueue('make.sandwich', {:bread => 'white', :sandwich_number => i})

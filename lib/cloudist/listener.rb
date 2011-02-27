@@ -67,18 +67,24 @@ module Cloudist
           method_and_args = [key.shift]
         end
         method_and_args << key
+        
       when :progress
         method_and_args << payload.progress
         method_and_args << payload.description
+        
       when :runtime
         method_and_args << payload.runtime
+        
       when :reply
         
       when :update
         
       when :error
+        method_and_args << Cloudist::SafeError.new(payload)
         
       when :log
+        method_and_args << payload.message
+        method_and_args << payload.level
         
       else
         method_and_args << data if method(method_and_args[0]).arity == 1
@@ -109,7 +115,11 @@ module Cloudist
       # :noop
     end
     
-    def log(o)
+    def log(message, level)
+      # :noop
+    end
+    
+    def error(e)
       # :noop
     end
     

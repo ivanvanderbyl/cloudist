@@ -104,10 +104,10 @@ describe Cloudist::Payload do
     payload.headers[:reply_to].should be_nil
     payload.set_reply_to("my_custom_queue")
     payload.headers[:reply_to].should_not be_nil
-    payload.headers[:reply_to].should match /^temp\.reply\.my_custom_queue\.(.+)/
-    body, headers = payload.formatted
+    payload.headers[:reply_to].should match /^temp\.reply\.my_custom_queue/
+    body, popts = payload.formatted
+    headers = popts[:headers]
     headers[:reply_to].should == payload.headers[:reply_to]
-    
   end
   
   it "should not overwrite passed in headers" do
@@ -126,6 +126,12 @@ describe Cloudist::Payload do
   it "should be able to transport an error" do
     e = ArgumentError.new("FAILED")
     payload = Cloudist::Payload.new(e, {:message_type => 'error'})
+  end
+  
+  it "should be able to query payload keys with key?" do
+    payload = Cloudist::Payload.new({:bread => 'white'}, {:ttl => 25, :event_hash => 'foo', :published_on => 12345, :message_id => 1})
+    payload.bread?.should be_true
+    payload.cheese?.should be_false
   end
   
 end
