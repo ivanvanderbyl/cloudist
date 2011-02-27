@@ -80,6 +80,7 @@ module Cloudist
       when :update
         
       when :error
+        method_and_args << Cloudist::SafeError.new(payload)
         
       when :log
         method_and_args << payload.message
@@ -115,6 +116,10 @@ module Cloudist
     end
     
     def log(message, level)
+      # :noop
+    end
+    
+    def error(e)
       # :noop
     end
     
