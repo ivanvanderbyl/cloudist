@@ -46,7 +46,7 @@ end
 
 Cloudist.signal_trap!
 
-Cloudist.start {
+Cloudist.start(:logging => false, :heartbeat => 10) {
   
   unless ARGV.empty?
     job_count = ARGV.pop.to_i
