@@ -1,7 +1,10 @@
 require 'uri'
 require 'json' unless defined? ActiveSupport::JSON
+
+# $:.unshift "/Users/ivan/dev/ruby/amqp/lib"
 require "amqp"
 require "mq"
+
 require "logger"
 require "digest/md5"
 
@@ -223,7 +226,9 @@ module Cloudist
         :host => uri.host,
         :user => uri.user,
         :port => uri.port || 5672,
-        :pass => uri.password
+        :pass => uri.password,
+        :heartbeat => 5,
+        :logging => false
       }
     rescue Object => e
       raise "invalid AMQP_URL: (#{uri.inspect}) #{e.class} -> #{e.message}"
