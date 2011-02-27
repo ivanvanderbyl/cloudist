@@ -1,11 +1,8 @@
 module Cloudist
   class Job
-    attr_reader :payload, :reply_queue
-    
+    attr_reader :payload
     def initialize(payload)
       @payload = payload
-      @reply_queue = ReplyQueue.new(payload.reply_to)
-      @reply_queue.setup
     end
     
     def id
@@ -39,8 +36,11 @@ module Cloudist
       
       reply_payload = Payload.new(body, headers)
       
+      reply_queue = ReplyQueue.new(payload.reply_to)
+      reply_queue.setup
       published_headers = reply_queue.publish_to_q(reply_payload)
       
+      # log.debug("Replying: #{body.inspect} HEADERS: #{headers.inspect}")
       reply_payload
     end
     
