@@ -32,6 +32,6 @@ end
 
 Cloudist.signal_trap!
 
-Cloudist.start {
-  Cloudist.handle('make.sandwich', 'eat.sandwich').with(SandwichWorker)
+Cloudist.start(:heartbeat => 60, :logging => true) {
+  Cloudist.handle('make.sandwich').with(SandwichWorker)
 }
