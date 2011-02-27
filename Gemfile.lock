@@ -1,6 +1,6 @@
 GIT
   remote: git://github.com/ivanvanderbyl/amqp.git
-  revision: 2d54d21110b3ef61e05c1d0dddadb9d983f207ca
+  revision: 1b71afe5dcfb76eaaacf27c8f22ad5f977740d44
   branch: feature/heartbeat
   specs:
     amqp (0.7.0)
@@ -55,7 +55,7 @@ PLATFORMS
 
 DEPENDENCIES
   activesupport (~> 3.0.3)
-  amqp!
+  amqp (= 0.7)!
   bundler (~> 1.0.0)
   i18n
   jeweler (~> 1.5.2)
