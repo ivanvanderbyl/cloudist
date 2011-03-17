@@ -9,14 +9,13 @@ GEM
   remote: http://rubygems.org/
   specs:
     activesupport (3.0.4)
-    amqp (0.7.0)
+    amqp (0.6.7)
       eventmachine (>= 0.12.4)
+    bunny (0.6.0)
     diff-lcs (1.1.2)
     eventmachine (0.12.10)
     git (1.2.5)
     i18n (0.5.0)
-    ivanvanderbyl-amqp (0.6.13.1)
-      eventmachine (>= 0.12.4)
     jeweler (1.5.2)
       bundler (~> 1.0.0)
       git (>= 1.2.5)
@@ -45,15 +44,17 @@ GEM
     ruby_parser (2.0.6)
       sexp_processor (~> 3.0)
     sexp_processor (3.0.5)
+    system_timer (1.0)
 
 PLATFORMS
   ruby
 
 DEPENDENCIES
   activesupport (~> 3.0.3)
+  amqp (= 0.6.7)
   bundler (~> 1.0.0)
+  bunny
   i18n
-  ivanvanderbyl-amqp
   jeweler (~> 1.5.2)
   json (~> 1.4.6)
   mocha
@@ -62,3 +63,4 @@ DEPENDENCIES
   reek (~> 1.2.8)
   roodi (~> 2.1.0)
   rspec (~> 2.3.0)
+  system_timer
