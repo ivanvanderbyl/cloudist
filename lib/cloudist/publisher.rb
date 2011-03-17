@@ -4,8 +4,13 @@ module Cloudist
     class << self
       def enqueue(queue_name, data)
         payload = Cloudist::Payload.new(data)
-
-        queue = Cloudist::JobQueue.new(queue_name)
+        
+        if EM.reactor_running?
+          queue = Cloudist::JobQueue.new(queue_name)
+        else
+          queue = Cloudist::SyncJobQueue.new(queue_name)
+        end
+        
         queue.setup
         queue.publish(payload)
         

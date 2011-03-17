@@ -15,8 +15,11 @@ require "cloudist/core_ext/class"
 require "cloudist/errors"
 require "cloudist/utils"
 require "cloudist/queues/basic_queue"
+require "cloudist/queues/sync_queue"
 require "cloudist/queues/job_queue"
+require "cloudist/queues/sync_job_queue"
 require "cloudist/queues/reply_queue"
+require "cloudist/queues/sync_reply_queue"
 require "cloudist/queues/log_queue"
 require "cloudist/publisher"
 require "cloudist/payload"
@@ -189,14 +192,38 @@ module Cloudist
       # TODO: Detect if inside loop, if not use bunny sync
       Cloudist::Publisher.enqueue(job_queue_name, data)
     end
+    
+    # Send a reply synchronously
+    # This uses bunny instead of AMQP and as such can be run outside
+    # of EventMachine and the Cloudist start loop.
+    # 
+    # Usage: Cloudist.reply('make.sandwich', {:sandwhich_id => 12345})
+    # 
+    def reply(queue_name, job_id, data, options = {})
+      headers = {
+        :message_id => job_id,
+        :message_type => "reply",
+        # :event => 'working',
+        :message_type => 'reply'
+      }.update(options)
+
+      payload = Cloudist::Payload.new(data, headers)
+
+      queue = Cloudist::SyncReplyQueue.new(queue_name)
+
+      queue.setup
+      queue.publish_to_q(payload)
+    end
 
     # Call this at anytime inside the loop to exit the app.
     def stop_safely
-      ::EM.add_timer(0.2) { 
-        ::AMQP.stop { 
-          ::EM.stop
+      if EM.reactor_running?
+        ::EM.add_timer(0.2) { 
+          ::AMQP.stop { 
+            ::EM.stop
+          }
         }
-      }
+      end
     end
     
     alias :stop :stop_safely

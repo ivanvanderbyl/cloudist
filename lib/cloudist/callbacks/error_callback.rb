@@ -25,6 +25,8 @@ module Cloudist
       @payload.exception
     end
     
+    alias :exception :class_name
+    
     def name
       class_name
     end

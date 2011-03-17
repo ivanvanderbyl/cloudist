@@ -35,7 +35,7 @@ class SandwichListener < Cloudist::Listener
   end
   
   def event(type)
-    # puts "Event: #{type}"
+    puts "Event: #{type}"
   end
   
   def finished
@@ -43,6 +43,10 @@ class SandwichListener < Cloudist::Listener
     if $total_jobs == 0
       # Cloudist.stop
     end
+  end
+  
+  def reply
+    p data
   end
   
 end

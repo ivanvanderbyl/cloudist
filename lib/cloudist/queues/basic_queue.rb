@@ -110,9 +110,9 @@ module Cloudist
       end
 
       def print_status
-        q.status{ |num_messages, num_consumers|
-          log.info("STATUS: #{q.name}: JOBS: #{num_messages} WORKERS: #{num_consumers+1}")
-        }
+        # q.status{ |num_messages, num_consumers|
+        #   log.info("STATUS: #{q.name}: JOBS: #{num_messages} WORKERS: #{num_consumers+1}")
+        # }
       end
 
       def publish(payload)
