@@ -1,5 +1,5 @@
 require "bunny"
-require 'system_timer'
+# require 'system_timer'
 
 module Cloudist
   module Queues
