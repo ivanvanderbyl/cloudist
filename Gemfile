@@ -7,7 +7,7 @@ gem 'bunny'
 gem "json",           "~> 1.4.6"
 gem "i18n"
 gem "activesupport",  "~> 3.0.3"
-gem "system_timer"
+gem "system_timer", :platforms => [:ruby_18]
 
 # Add dependencies to develop your gem here.
 # Include everything needed to run rake, tests, features, etc.
