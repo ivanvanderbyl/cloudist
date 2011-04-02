@@ -4,7 +4,7 @@ module Cloudist
   class Payload
     include Utils
     
-    attr_reader :body, :publish_opts, :headers
+    attr_reader :body, :publish_opts, :headers, :timestamp
 
     def initialize(body, headers = {}, publish_opts = {})
       @publish_opts, @headers = publish_opts, headers
@@ -13,7 +13,9 @@ module Cloudist
       body = parse_message(body) if body.is_a?(String)
       
       # raise Cloudist::BadPayload, "Expected Hash for payload" unless body.is_a?(Hash)
-
+      
+      @timestamp = Time.now.to_f
+      
       @body = body
       # HashWithIndifferentAccess.new(body)
       update_headers
@@ -53,7 +55,7 @@ module Cloudist
       raise StaleHeadersError, "Headers cannot be changed because payload has already been published" if published?
       headers[:published_on] ||= body.is_a?(Hash) && body.delete(:published_on) || Time.now.utc.to_i
       headers[:ttl] ||= body.is_a?(Hash) && body.delete('ttl') || Cloudist::DEFAULT_TTL
-
+      headers[:timestamp] = timestamp
       # this is the event hash that gets transferred through various publish/reply actions
       headers[:event_hash] ||= id
 
