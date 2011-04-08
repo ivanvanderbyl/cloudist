@@ -2,7 +2,7 @@ source :rubygems
 
 # gem 'amqp',           :git => 'git://github.com/ivanvanderbyl/amqp.git', :branch => 'feature/heartbeat-0-6'
 # gem 'ivanvanderbyl-amqp'
-gem 'amqp', '0.6.7'
+gem 'amqp',           '>=0.7.1'
 gem 'bunny'
 gem "json",           "~> 1.4.6"
 gem "i18n"
