@@ -55,6 +55,13 @@ module Cloudist
     def start(options = {}, &block)
       config = settings.update(options)
       AMQP.start(config) do
+        AMQP.conn.connection_status do |status|
+          log.debug("AMQP connection status changed: #{status}")
+          if status == :disconnected
+            AMQP.conn.reconnect(true)
+          end
+        end
+        
         self.instance_eval(&block) if block_given?
       end
     end
