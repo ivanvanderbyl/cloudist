@@ -3,7 +3,6 @@ require 'json' unless defined? ActiveSupport::JSON
 
 # $:.unshift "/Users/ivan/dev/ruby/amqp/lib"
 require "amqp"
-require "mq"
 
 require "logger"
 require "digest/md5"

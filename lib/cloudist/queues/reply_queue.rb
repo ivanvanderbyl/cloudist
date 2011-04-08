@@ -7,7 +7,7 @@ module Cloudist
     end
 
     def setup(key = nil)
-      @mq = MQ.new
+      @mq = AMQP::Channel.new
       @q = @mq.queue(queue_name, opts)
       @ex = @mq.direct
       if key

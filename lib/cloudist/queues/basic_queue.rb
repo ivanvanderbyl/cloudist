@@ -20,7 +20,7 @@ module Cloudist
       def setup
         return if @setup.eql?(true)
 
-        @mq = MQ.new
+        @mq = AMQP::Channel.new
         @q = @mq.queue(queue_name, opts)
         #  do |queue, message_count, consumer_count|
         #   puts "Queue #{queue.name} declared!"
