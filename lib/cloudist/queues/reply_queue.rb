@@ -2,7 +2,7 @@ module Cloudist
   class ReplyQueue < Cloudist::Queues::BasicQueue
     def initialize(queue_name, opts={})
       opts[:auto_delete] = true
-      opts[:nowait] = false
+      opts[:nowait] = true
       super
     end
 

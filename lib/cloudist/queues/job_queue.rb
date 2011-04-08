@@ -5,7 +5,7 @@ module Cloudist
     def initialize(queue_name, opts={})
       @prefetch = opts.delete(:prefetch) || 1
       opts[:auto_delete] = false
-
+      
       super(queue_name, opts)
     end
 

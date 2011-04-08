@@ -22,6 +22,7 @@ module Cloudist
 
         @mq = AMQP::Channel.new
         @q = @mq.queue(queue_name, opts)
+        
         #  do |queue, message_count, consumer_count|
         #   puts "Queue #{queue.name} declared!"
         #   puts "Message count: #{message_count}"
@@ -41,8 +42,9 @@ module Cloudist
       end
 
       def tag
-        s = "queue=#{q.name}"
-        s += " exchange=#{ex.name}" if ex
+        s = ''
+        s << "queue=#{q.name}" if q
+        s << " exchange=#{ex.name}" if ex
         s
       end
       
@@ -85,11 +87,10 @@ module Cloudist
       def subscribe(amqp_opts={}, opts={})
         setup
         # print_status
-        q.subscribe(amqp_opts) do |queue_header, encoded_message|
+        q.subscribe do |queue_header, encoded_message|
           next if Cloudist.closing?
-
           request = Cloudist::Request.new(self, encoded_message, queue_header)
-
+          
           begin
             raise Cloudist::ExpiredMessage if request.expired?
             yield request if block_given?
@@ -105,7 +106,6 @@ module Cloudist
             Cloudist.handle_error(e)
           end
         end
-        log.info "AMQP Subscribed: #{tag}"
         self
       end
 
