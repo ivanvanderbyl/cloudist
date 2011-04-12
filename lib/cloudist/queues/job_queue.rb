@@ -9,10 +9,10 @@ module Cloudist
       super(queue_name, opts)
     end
 
-    def setup
-      super
-      @mq.prefetch(self.prefetch)
-    end
+    # def setup
+    #   # super
+    #   # @mq.prefetch(self.prefetch)
+    # end
 
     def subscribe(amqp_opts={}, opts={})
       amqp_opts[:ack] ||= true

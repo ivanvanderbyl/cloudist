@@ -8,6 +8,7 @@ module Cloudist
 
     def setup(key = nil)
       @mq = AMQP::Channel.new
+      @mq.prefetch(1)
       @q = @mq.queue(queue_name, opts)
       @ex = @mq.direct
       if key

@@ -18,22 +18,38 @@ module Cloudist
       end
 
       def setup
-        return if @setup.eql?(true)
-
+        # return if @setup.eql?(true)
+        
         @mq = AMQP::Channel.new
-        @q = @mq.queue(queue_name, opts)
         
-        #  do |queue, message_count, consumer_count|
-        #   puts "Queue #{queue.name} declared!"
-        #   puts "Message count: #{message_count}"
-        #   puts "Consumer count: #{consumer_count}"
-        # end
+        # Set up QOS. If you do not do this then the subscribe in receive_message
+        # will get overwelmd and the whole thing will collapse in on itself.
+        @mq.prefetch(1)
+        opts = {:durable => false}.merge(opts)
         
-        # if we don't specify an exchange name it defaults to the queue_name
-        @ex = @mq.direct(opts[:exchange_name] || queue_name)
-
-        q.bind(ex) if ex
-
+        @ex = MQ::Exchange.new(@mq, :direct, queue_name.to_s, opts)
+        @q = MQ::Queue.new(@mq, queue_name.to_s, opts).bind(@ex)
+        
+                # 
+                # 
+                # @mq = AMQP::Channel.new
+                # @q = @mq.queue(queue_name, opts)
+                # 
+                # # Set up QOS. If you do not do this then the subscribe in receive_message
+                # # will get overwelmd and the whole thing will collapse in on itself.
+                # @mq.prefetch(1)
+                # 
+                # #  do |queue, message_count, consumer_count|
+                # #   puts "Queue #{queue.name} declared!"
+                # #   puts "Message count: #{message_count}"
+                # #   puts "Consumer count: #{consumer_count}"
+                # # end
+                # 
+                # # if we don't specify an exchange name it defaults to the queue_name
+                # @ex = @mq.direct(opts[:exchange_name] || queue_name)
+                # 
+                # q.bind(ex) if ex
+        
         @setup = true
       end
 
