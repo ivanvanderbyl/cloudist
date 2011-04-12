@@ -26,8 +26,8 @@ module Cloudist
         @mq.prefetch(1)
         # opts = {:durable => false}.merge(opts)
         
-        @ex = MQ::Exchange.new(@mq, :direct, queue_name.to_s, opts)
-        @q = MQ::Queue.new(@mq, queue_name.to_s, opts).bind(@ex)
+        @ex = AMQP::Channel.new(@mq, :direct, queue_name.to_s, opts)
+        @q = AMQP::Queue.new(@mq, queue_name.to_s, opts).bind(@ex)
         
                 # 
                 # 
