@@ -10,8 +10,7 @@ module Cloudist
       def initialize(queue_name, opts = {})
         opts = {
           :auto_delete => true,
-          :durable => false,
-          :prefetch => 1
+          :durable => false
         }.update(opts)
 
         @queue_name, @opts = queue_name, opts
@@ -25,7 +24,7 @@ module Cloudist
         # Set up QOS. If you do not do this then the subscribe in receive_message
         # will get overwelmd and the whole thing will collapse in on itself.
         @mq.prefetch(1)
-        opts = {:durable => false}.merge(opts)
+        # opts = {:durable => false}.merge(opts)
         
         @ex = MQ::Exchange.new(@mq, :direct, queue_name.to_s, opts)
         @q = MQ::Queue.new(@mq, queue_name.to_s, opts).bind(@ex)
