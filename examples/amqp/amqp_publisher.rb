@@ -37,7 +37,7 @@ EM.run do
     queue.bind(exchange)
 
     EM.defer do
-      1000.times { |i|
+      10000.times { |i|
         log "Publishing message #{i+1}"
         if i % 1000 == 0
           puts "Sleeping..."
