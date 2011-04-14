@@ -8,6 +8,7 @@ require "logger"
 require "digest/md5"
 
 $:.unshift File.dirname(__FILE__)
+# require "em/iterator"
 require "cloudist/core_ext/string"
 require "cloudist/core_ext/object"
 require "cloudist/core_ext/class"
@@ -128,7 +129,7 @@ module Cloudist
       job_queue = JobQueue.new(queue_name)
       job_queue.subscribe do |request|
         j = Job.new(request.payload.dup)
-        EM.defer do
+        # EM.defer do
           begin
             if block_given?
               worker_instance = GenericWorker.new(j, job_queue.q)
@@ -147,7 +148,7 @@ module Cloudist
             j.reply({:runtime => (finished - request.start)}, {:message_type => 'runtime'})
             j.cleanup
           end
-        end
+        # end
       end
       
       ((@@workers[queue_name.to_s] ||= []) << job_queue).uniq!
@@ -254,6 +255,8 @@ module Cloudist
     def version
       @@version ||= File.read(File.dirname(__FILE__) + '/../VERSION').strip
     end
+    
+    # EM beta
     
     def default_settings
       uri = URI.parse(ENV["AMQP_URL"] || 'amqp://guest:guest@localhost:5672/')
