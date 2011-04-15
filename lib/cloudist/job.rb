@@ -1,8 +1,16 @@
 module Cloudist
   class Job
-    attr_reader :payload
+    attr_reader :payload, :reply_queue
+    
     def initialize(payload)
       @payload = payload
+      
+      if payload.reply_to
+        @reply_queue = ReplyQueue.new(payload.reply_to)
+        reply_queue.setup
+      else
+        @reply_queue = nil
+      end
     end
     
     def id
@@ -22,6 +30,8 @@ module Cloudist
     end
     
     def reply(body, headers = {}, options = {})
+      raise ArgumentError, "Reply queue not ready" unless reply_queue
+      
       options = {
         :echo => false
       }.update(options)
@@ -31,16 +41,9 @@ module Cloudist
         :message_type => "reply"
       }.update(headers)
       
-      # Echo the payload back
-      # body.merge!(payload.body) if options[:echo] == true
-      
       reply_payload = Payload.new(body, headers)
-      
-      reply_queue = ReplyQueue.new(payload.reply_to)
-      reply_queue.setup
       published_headers = reply_queue.publish_to_q(reply_payload)
       
-      # log.debug("Replying: #{body.inspect} HEADERS: #{headers.inspect}")
       reply_payload
     end
     
