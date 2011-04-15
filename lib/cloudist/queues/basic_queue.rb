@@ -17,33 +17,15 @@ module Cloudist
       end
 
       def setup
-        # return if @setup.eql?(true)
+        return if @setup.eql?(true)
         
         @channel = ::AMQP::Channel.new
         
         # Set up QOS. If you do not do this then the subscribe in receive_message
         # will get overwelmd and the whole thing will collapse in on itself.
         @channel.prefetch(1)
-        
-        # opts = {:durable => false}.merge(opts)
-        
-        # @ex = AMQP::Channel.new(@channel, :direct, queue_name.to_s, opts)
-        # @q = AMQP::Queue.new(@channel, queue_name.to_s, opts).bind(@ex)
-        
-        
-        
-        # @channel = AMQP::Channel.new
+
         @q = @channel.queue(queue_name, :durable => false)
-        
-        # Set up QOS. If you do not do this then the subscribe in receive_message
-        # will get overwelmd and the whole thing will collapse in on itself.
-        # @channel.prefetch(1)
-        
-        #  do |queue, message_count, consumer_count|
-        #   puts "Queue #{queue.name} declared!"
-        #   puts "Message count: #{message_count}"
-        #   puts "Consumer count: #{consumer_count}"
-        # end
         
         # if we don't specify an exchange name it defaults to the queue_name
         @ex = @channel.direct(queue_name)
@@ -66,26 +48,28 @@ module Cloudist
       
       def subscribe(amqp_opts={}, opts={})
         setup
-        # print_status
+        log.info tag
         q.subscribe(:ack => true) do |queue_header, encoded_message|
-          # next if Cloudist.closing?
+          next if Cloudist.closing?
           request = Cloudist::Request.new(self, encoded_message, queue_header)
           
-          begin
-            raise Cloudist::ExpiredMessage if request.expired?
-            yield request if block_given?
-            # finished = Time.now.utc.to_i
-            # log.debug("Finished Job in #{finished - request.start} seconds")
+          EM.defer do
+            begin
+              raise Cloudist::ExpiredMessage if request.expired?
+              yield request if block_given?
 
-          # rescue Cloudist::ExpiredMessage
-            # log.error "AMQP Message Timeout: #{tag} ttl=#{request.ttl} age=#{request.age}"
-            # request.ack if amqp_opts[:ack]
+            rescue Cloudist::ExpiredMessage
+              log.error "AMQP Message Timeout: #{tag} ttl=#{request.ttl} age=#{request.age}"
+              # request.ack
 
-          # rescue => e
-            # request.ack if amqp_opts[:ack]
-            # Cloudist.handle_error(e)
-          ensure
-            request.ack
+            rescue => e
+              # request.ack
+              Cloudist.handle_error(e)
+            ensure
+              request.ack# unless Cloudist.closing?
+              finished = Time.now.utc.to_i
+              log.debug("Finished Job in #{finished - request.start} seconds")
+            end
           end
         end
         self
@@ -106,7 +90,9 @@ module Cloudist
 
       def publish_to_q(payload)
         body, headers = payload.formatted
-        q.publish(body, headers)
+        EM.defer {
+          q.publish(body, headers)
+        }
         payload.publish
         return headers
       end
