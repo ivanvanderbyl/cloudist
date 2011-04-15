@@ -16,7 +16,7 @@ module Cloudist
       
       def subscribe(queue_name)
         raise RuntimeError, "You can't subscribe until EM is running" unless EM.reactor_running?
-        
+        puts "Listen: #{queue_name}"
         self.reply_queues ||= []
         
         reply_queue = Cloudist::ReplyQueue.new(queue_name)

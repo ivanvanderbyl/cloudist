@@ -14,25 +14,37 @@ module Cloudist
         }.update(opts)
 
         @queue_name, @opts = queue_name, opts
+        
+        setup
+      end
+      
+      def inspect
+        "<#{self.class.name} queue_name=#{queue_name}>"
       end
 
       def setup
-        return if @setup.eql?(true)
+        return if @is_setup == true
+        @is_setup = true
+        
+        puts "Setup"
+        log.debug(opts.inspect)
         
         @channel = ::AMQP::Channel.new
         
         # Set up QOS. If you do not do this then the subscribe in receive_message
         # will get overwelmd and the whole thing will collapse in on itself.
         @channel.prefetch(1)
-
-        @q = @channel.queue(queue_name, :durable => false)
         
-        # if we don't specify an exchange name it defaults to the queue_name
-        @ex = @channel.direct(queue_name)
+        @q = @channel.queue(queue_name, opts)
         
-        q.bind(ex) if ex
+        setup_exchange
         
-        @setup = true
+        log.info tag
+      end
+      
+      def setup_exchange
+        @ex = channel.direct(queue_name)
+        q.bind(ex)
       end
 
       def log
@@ -40,15 +52,13 @@ module Cloudist
       end
 
       def tag
-        s = ''
-        s << "queue=#{q.name}" if q
-        s << " exchange=#{ex.name}" if ex
-        s
+        [].tap do |a|
+          a << "queue=#{q.name}" if q
+          a << "exchange=#{ex.name}" if ex
+        end.join(' ')
       end
       
       def subscribe(amqp_opts={}, opts={})
-        setup
-        log.info tag
         q.subscribe(:ack => true) do |queue_header, encoded_message|
           next if Cloudist.closing?
           request = Cloudist::Request.new(self, encoded_message, queue_header)
@@ -66,9 +76,10 @@ module Cloudist
               # request.ack
               Cloudist.handle_error(e)
             ensure
-              request.ack# unless Cloudist.closing?
-              finished = Time.now.utc.to_i
-              log.debug("Finished Job in #{finished - request.start} seconds")
+              request.ack
+              # unless Cloudist.closing?
+              # finished = Time.now.utc.to_i
+              # log.debug("Finished Job in #{finished - request.start} seconds")
             end
           end
         end

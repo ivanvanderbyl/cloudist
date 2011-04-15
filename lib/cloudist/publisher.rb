@@ -13,10 +13,10 @@ module Cloudist
         
         queue.setup
         
-        send_message = proc {
+        # send_message = proc {
           queue.publish(payload)
-        }
-        EM.next_tick(&send_message)
+        # }
+        # EM.next_tick(&send_message)
         
         return Job.new(payload)
       end
