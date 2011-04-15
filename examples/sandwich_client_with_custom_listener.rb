@@ -25,7 +25,7 @@ class SandwichListener < Cloudist::Listener
   end
   
   def progress(i)
-    # puts "Progress: %1d%" % i
+    puts "Progress: %1d%" % i
   end
   
   def runtime(seconds)
@@ -54,7 +54,7 @@ end
 
 Cloudist.signal_trap!
 
-Cloudist.start(:logging => false, :heartbeat => 60) {
+Cloudist.start(:logging => false, :heartbeat => 10) {
   puts "Started"
   unless ARGV.empty?
     job_count = ARGV.pop.to_i

@@ -31,7 +31,7 @@ EM.run do
     log "Connected to AMQP broker"
 
     channel  = AMQP::Channel.new(connection)
-    channel.prefetch(10)
+    channel.prefetch(1)
     queue    = channel.queue("test.hello.world")
     exchange = channel.direct
     queue.bind(exchange)
@@ -41,7 +41,7 @@ EM.run do
     queue.subscribe(:ack => true) do |h, payload|
       puts "--"
       EM.defer {
-        sleep(1)
+        # sleep(1)
         @count += 1
         log "Received a message: #{payload} - #{@count}"
         h.ack
