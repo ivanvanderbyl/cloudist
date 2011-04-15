@@ -14,15 +14,17 @@ module Cloudist
     #   # @mq.prefetch(self.prefetch)
     # end
 
-    def subscribe(amqp_opts={}, opts={})
-      amqp_opts[:ack] ||= true
-      super(amqp_opts, opts) do |request|
-        begin
-          yield request if block_given?
-        ensure
-          request.ack unless amqp_opts[:auto_ack] == false || Cloudist.closing?
-        end
-      end
-    end
+    # def subscribe(amqp_opts={}, opts={})
+    #   amqp_opts[:ack] = true
+    #   super(amqp_opts, opts) do |request|
+    #     EM.defer {
+    #       begin
+    #         yield request if block_given?
+    #       ensure
+    #         request.ack unless amqp_opts[:auto_ack] == false || Cloudist.closing?
+    #       end
+    #     }
+    #   end
+    # end
   end
 end

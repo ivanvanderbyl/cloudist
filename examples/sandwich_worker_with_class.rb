@@ -22,7 +22,7 @@ class SandwichWorker < Cloudist::Worker
     job.started!
     (1..5).each do |i|
       job.progress(i * 20)
-      sleep(1)
+      # sleep(1)
       
       # raise ArgumentError, "NOT GOOD!" if i == 4
     end

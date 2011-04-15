@@ -5,7 +5,7 @@ module Cloudist
   module Queues
     class BasicQueue
       attr_reader :queue_name, :opts
-      attr_reader :q, :ex, :mq
+      attr_reader :q, :ex, :channel
 
       def initialize(queue_name, opts = {})
         opts = {
@@ -19,24 +19,25 @@ module Cloudist
       def setup
         # return if @setup.eql?(true)
         
-        @mq = AMQP::Channel.new
+        @channel = ::AMQP::Channel.new
         
         # Set up QOS. If you do not do this then the subscribe in receive_message
         # will get overwelmd and the whole thing will collapse in on itself.
-        @mq.prefetch(1)
+        @channel.prefetch(1)
+        
         # opts = {:durable => false}.merge(opts)
         
-        # @ex = AMQP::Channel.new(@mq, :direct, queue_name.to_s, opts)
-        # @q = AMQP::Queue.new(@mq, queue_name.to_s, opts).bind(@ex)
+        # @ex = AMQP::Channel.new(@channel, :direct, queue_name.to_s, opts)
+        # @q = AMQP::Queue.new(@channel, queue_name.to_s, opts).bind(@ex)
         
         
         
-        # @mq = AMQP::Channel.new
-        @q = @mq.queue(queue_name, opts)
+        # @channel = AMQP::Channel.new
+        @q = @channel.queue(queue_name, :durable => false)
         
         # Set up QOS. If you do not do this then the subscribe in receive_message
         # will get overwelmd and the whole thing will collapse in on itself.
-        # @mq.prefetch(1)
+        # @channel.prefetch(1)
         
         #  do |queue, message_count, consumer_count|
         #   puts "Queue #{queue.name} declared!"
@@ -45,7 +46,7 @@ module Cloudist
         # end
         
         # if we don't specify an exchange name it defaults to the queue_name
-        @ex = @mq.direct(queue_name)
+        @ex = @channel.direct(queue_name)
         
         q.bind(ex) if ex
         
@@ -63,47 +64,11 @@ module Cloudist
         s
       end
       
-      # Not yet supported
-      def subscribe_pop(amqp_opts={}, opts={})
-        setup
-        print_status
-        
-        q.pop { |queue_header, encoded_message|
-          unless encoded_message
-            # queue was empty
-            p [Time.now, :queue_empty!]
-
-            # try again in 1 second
-            EM.add_timer(1) { q.pop }
-          else
-            request = Cloudist::Request.new(self, encoded_message, queue_header)
-
-            begin
-              raise Cloudist::ExpiredMessage if request.expired?
-              yield request if block_given?
-              # finished = Time.now.utc.to_i
-              # log.debug("Finished Job in #{finished - request.start} seconds")
-
-            rescue Cloudist::ExpiredMessage
-              log.error "AMQP Message Timeout: #{tag} ttl=#{request.ttl} age=#{request.age}"
-              request.ack if amqp_opts[:ack]
-
-            rescue => e
-              request.ack if amqp_opts[:ack]
-              Cloudist.handle_error(e)
-            end
-
-            # get the next message in the queue
-            q.pop
-          end
-        }
-      end
-
       def subscribe(amqp_opts={}, opts={})
         setup
         # print_status
-        q.subscribe do |queue_header, encoded_message|
-          next if Cloudist.closing?
+        q.subscribe(:ack => true) do |queue_header, encoded_message|
+          # next if Cloudist.closing?
           request = Cloudist::Request.new(self, encoded_message, queue_header)
           
           begin
@@ -112,13 +77,15 @@ module Cloudist
             # finished = Time.now.utc.to_i
             # log.debug("Finished Job in #{finished - request.start} seconds")
 
-          rescue Cloudist::ExpiredMessage
-            log.error "AMQP Message Timeout: #{tag} ttl=#{request.ttl} age=#{request.age}"
-            request.ack if amqp_opts[:ack]
+          # rescue Cloudist::ExpiredMessage
+            # log.error "AMQP Message Timeout: #{tag} ttl=#{request.ttl} age=#{request.age}"
+            # request.ack if amqp_opts[:ack]
 
-          rescue => e
-            request.ack if amqp_opts[:ack]
-            Cloudist.handle_error(e)
+          # rescue => e
+            # request.ack if amqp_opts[:ack]
+            # Cloudist.handle_error(e)
+          ensure
+            request.ack
           end
         end
         self
@@ -146,7 +113,7 @@ module Cloudist
 
       def teardown
         @q.unsubscribe
-        @mq.close
+        @channel.close
         log.debug "AMQP Unsubscribed: #{tag}"
       end
 

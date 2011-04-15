@@ -55,7 +55,7 @@ end
 Cloudist.signal_trap!
 
 Cloudist.start(:logging => false, :heartbeat => 60) {
-  
+  puts "Started"
   unless ARGV.empty?
     job_count = ARGV.pop.to_i
     $total_jobs = job_count
