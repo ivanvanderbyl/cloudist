@@ -3,7 +3,6 @@ module Cloudist
     attr_reader :body, :headers, :id, :queue, :timestamp
     
     # Expects body to be decoded
-    # Queue should be a Cloudist::Queue object responding to #publish
     def initialize(body, headers = {})
       @queue = queue
       
@@ -25,15 +24,19 @@ module Cloudist
       headers[:ttl] ||= Cloudist::DEFAULT_TTL
       headers[:timestamp] = timestamp
       headers[:message_id] ||= id
+      headers[:message_type] = 'message'
     end
     
     # Convenience method for replying
     # Constructs a reply message and publishes it
     def reply(body, headers = {})
+      set_reply_header
+      raise NotImplementedError
       # publish response
     end
     
     # Publishes this message to the exchange or queue
+    # Queue should be a Cloudist::Queue object responding to #publish
     def publish(queue)
       update_published_date!
       update_headers!
@@ -58,6 +61,12 @@ module Cloudist
     
     def latency
       (published_at.to_f - created_at.to_f)
+    end
+    
+    private
+    
+    def set_reply_header
+      headers[:message_type] = 'reply'
     end
     
   end

@@ -35,14 +35,14 @@ describe Cloudist::Message do
     msg = Cloudist::Message.new({:hello => "world"}, {:id => "not-an-id"})
     msg.update_headers
     
-    msg.headers.keys.should == ["ttl", "timestamp", "message_id"]
+    msg.headers.keys.should include *["ttl", "timestamp", "message_id"]
   end
   
   it "should allow custom header when updating" do
     msg = Cloudist::Message.new({:hello => "world"}, {:id => "not-an-id"})
     msg.update_headers(:message_type => "reply")
     
-    msg.headers.keys.should == ["ttl", "timestamp", "message_id", "message_type"]
+    msg.headers.keys.should include *["ttl", "timestamp", "message_id", "message_type"]
   end
   
   it "should not be published if timestamp is not in headers" do
@@ -75,6 +75,11 @@ describe Cloudist::Message do
     sleep(0.1)
     msg.publish(@queue)
     msg.latency.should be_within(0.001).of(0.1)
+  end
+  
+  it "should reply to sender" do
+    msg = Cloudist::Message.new({:hello => "world"}, {:id => "not-an-id"})
+    msg.reply(:success => true)
   end
   
 end
