@@ -56,6 +56,12 @@ describe Cloudist::Message do
     msg.published?.should be_true
   end
   
+  it "should include ttl in headers" do
+    msg = Cloudist::Message.new({:hello => "world"})
+    # msg.publish(@queue)
+    msg.headers[:ttl].should == "300"
+  end
+  
   it "should get created_at date from header" do
     time = Time.now.to_f
     msg = Cloudist::Message.new({:hello => "world"}, {:timestamp => time})
