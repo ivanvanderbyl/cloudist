@@ -4,18 +4,30 @@ $:.unshift(File.expand_path("../../../lib", __FILE__))
 
 require "cloudist"
 
-Cloudist.signal_trap!
+Cloudist::Application.signal_trap!
 
-AMQP.start(:heartbeat => 10, :logging => false) do  
-  q = Cloudist::JobQueue.new('make.sandwich')
+AMQP.start(:heartbeat => 0, :logging => false) do
+  q = Cloudist::Queue.new('encode.video')
   
-  q.subscribe do |request|
-    p request.payload.body
+  q.subscribe do |msg|
+    p msg.body.to_hash
     
-    job = Cloudist::Job.new(request.payload)
+    msg = Cloudist::Message.new(msg.body)
     
-    # Echo back payload body
-    job.reply(request.payload.body)
+    reply_q = Cloudist::ReplyQueue.new('encode.video')
+    msg.publish(reply_q)
+    
+    # # p msg.headers.queue_name
+    # msg.reply({:working => 1})
+    # # msg.reply(:working => 2)
+    # # msg.reply(:working => 3)
+    # # msg.reply(:working => 4)
+    # # msg.reply(:working => 5)
+    # sleep(1)
+    # msg.reply({:stopped => 6})
+    # 
+    # sleep(1)
+    # msg.reply({:success => true})
   end
   
 end
