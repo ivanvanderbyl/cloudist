@@ -1,6 +1,4 @@
 module Cloudist
-  DEFAULT_TTL = 300
-
   class Payload
     include Utils
     
