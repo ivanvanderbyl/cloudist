@@ -13,14 +13,16 @@ GEM
       eventmachine (>= 0.12.4)
     bunny (0.6.0)
     diff-lcs (1.1.2)
-    eventmachine (0.12.10)
+    eventmachine (1.0.0.beta.3)
     git (1.2.5)
+    hashie (1.0.0)
     i18n (0.5.0)
     jeweler (1.5.2)
       bundler (~> 1.0.0)
       git (>= 1.2.5)
       rake
     json (1.4.6)
+    macaddr (1.0.0)
     mocha (0.9.12)
     rake (0.8.7)
     rcov (0.9.9)
@@ -44,6 +46,9 @@ GEM
     ruby_parser (2.0.6)
       sexp_processor (~> 3.0)
     sexp_processor (3.0.5)
+    system_timer (1.0)
+    uuid (2.3.2)
+      macaddr (~> 1.0)
 
 PLATFORMS
   ruby
@@ -53,6 +58,8 @@ DEPENDENCIES
   amqp (>= 0.7.1)
   bundler (~> 1.0.0)
   bunny
+  eventmachine (= 1.0.0.beta.3)
+  hashie
   i18n
   jeweler (~> 1.5.2)
   json (~> 1.4.6)
@@ -62,3 +69,5 @@ DEPENDENCIES
   reek (~> 1.2.8)
   roodi (~> 2.1.0)
   rspec (~> 2.3.0)
+  system_timer
+  uuid

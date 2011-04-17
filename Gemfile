@@ -1,13 +1,14 @@
 source :rubygems
 
-# gem 'amqp',           :git => 'git://github.com/ivanvanderbyl/amqp.git', :branch => 'feature/heartbeat-0-6'
-# gem 'ivanvanderbyl-amqp'
+gem 'eventmachine',   '1.0.0.beta.3' #:git => 'git://github.com/eventmachine/eventmachine.git'
 gem 'amqp',           '>=0.7.1'
 gem 'bunny'
+gem 'uuid'
 gem "json",           "~> 1.4.6"
 gem "i18n"
 gem "activesupport",  "~> 3.0.3"
-# gem "system_timer", :platforms => [:ruby_18]
+gem "hashie"
+gem "system_timer", :platforms => [:ruby_18]
 
 # Add dependencies to develop your gem here.
 # Include everything needed to run rake, tests, features, etc.
