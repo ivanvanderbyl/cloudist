@@ -3,7 +3,6 @@ $LOAD_PATH.unshift(File.dirname(__FILE__))
 require 'rspec'
 require "moqueue"
 require "mocha"
-
 require 'cloudist'
 
 # Requires supporting files with custom matchers and macros, etc,
