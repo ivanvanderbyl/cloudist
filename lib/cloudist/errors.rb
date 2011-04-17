@@ -3,4 +3,6 @@ module Cloudist
   class BadPayload < Error; end
   class EnqueueError < Error; end
   class StaleHeadersError < BadPayload; end
+  class UnknownReplyTo < RuntimeError; end
+  class ExpiredMessage < RuntimeError; end
 end
