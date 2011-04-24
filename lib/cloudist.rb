@@ -1,5 +1,5 @@
 require 'uri'
-require 'json' unless defined? ActiveSupport::JSON
+require 'json'# unless defined? ActiveSupport::JSON
 require "amqp"
 require "logger"
 require "digest/md5"

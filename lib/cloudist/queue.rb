@@ -16,7 +16,7 @@ module Cloudist
       @name, @options = name, options
       
       setup
-      p self.cached_queues.keys
+      # p self.cached_queues.keys
       
       log.debug(tag)
       purge
