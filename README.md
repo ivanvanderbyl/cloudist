@@ -27,7 +27,7 @@ Cloudist requires an EventMachine reactor loop and an AMQP connection, so if you
       }
     }
     
-This will start and AMQP connection and EM loop then yield everything inside it.
+This will start an AMQP connection and EM loop then yield everything inside it.
 
 In your worker:
 
