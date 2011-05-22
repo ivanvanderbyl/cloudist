@@ -18,9 +18,9 @@ $total_jobs = 0
 class SandwichListener < Cloudist::Listener
   listen_to "make.sandwich"
   
-  before :find_command
+  # before :find_job
   
-  def find_command
+  def find_job
     puts "--- #{job_id}"
   end
   
@@ -42,12 +42,14 @@ class SandwichListener < Cloudist::Listener
     puts "Event: #{type}"
   end
   
-  # def finished
-  #   # puts "*** Finished ***"
-  #   # if $total_jobs == 0
-  #   #   # Cloudist.stop
-  #   # end
-  # end
+  def finished
+    puts "*** Finished ***"
+    
+    if $total_jobs == 0
+      puts "Completed all jobs"
+      Cloudist.stop
+    end
+  end
   
   # def reply
   #   # p data
@@ -59,6 +61,7 @@ end
 Cloudist.signal_trap!
 
 Cloudist.start(:logging => true) {
+  puts AMQP.settings.inspect
   
   unless ARGV.empty?
     job_count = ARGV.pop.to_i
