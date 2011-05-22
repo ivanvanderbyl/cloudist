@@ -1,22 +1,15 @@
 module Cloudist
   class ReplyQueue < Cloudist::Queues::BasicQueue
-    def initialize(queue_name, opts={})
-      opts[:auto_delete] = true
-      opts[:nowait] = false
-      super
+    def initialize(queue_name, options={})
+      options[:auto_delete] = true
+      options[:nowait] = true
+      
+      @prefetch = 2
+      
+      super(queue_name, options)
     end
-
-    def setup(key = nil)
-      @mq = MQ.new
-      @q = @mq.queue(queue_name, opts)
-      @ex = @mq.direct
-      if key
-        @q.bind(@ex, :key => key)
-      else
-        @q.bind(@ex)
-      end
-    end
-
+    
+    
     # def subscribe(amqp_opts={}, opts={})
     #   super(amqp_opts, opts) do |request|
     #     yield request if block_given?
