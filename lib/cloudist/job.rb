@@ -55,7 +55,7 @@ module Cloudist
     end
     
     def event(event_name, event_data = {}, options = {})
-      event_data = {} if event_data.nil?
+      event_data ||= {}
       reply(event_data, {:event => event_name, :message_type => 'event'}, options)
     end
     

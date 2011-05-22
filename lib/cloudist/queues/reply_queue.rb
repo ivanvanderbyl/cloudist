@@ -1,23 +1,26 @@
 module Cloudist
-  class ReplyQueue < Cloudist::Queue
-    def initialize(name, options = {})
-      name = Utils.reply_prefix(name) unless name.starts_with?(Utils.reply_prefix(''))
-      options[:auto_delete] = true
-      options[:nowait] = true
-      super(name, options)
-    end
+  class ReplyQueue < Cloudist::Queues::BasicQueue
+    # def initialize(queue_name, options={})
+    #   options[:auto_delete] = true
+    #   options[:nowait] = true
+    #   
+    #   @prefetch = 2
+    #   
+    #   super(queue_name, options)
+    # end
     
-    def publish(msg)
-      raise ArgumentError, "Publish expects a Cloudist::Message object" unless msg.is_a?(Cloudist::Message)
-      
-      body, headers = msg.encoded
-      publish_to_q(body, headers)
-      p msg.body.to_hash
-    end
     
-    def setup_exchange
-      @ex = channel.direct
-      setup_binding
-    end
+    # def subscribe(amqp_opts={}, opts={})
+    #   super(amqp_opts, opts) do |request|
+    #     yield request if block_given?
+    #     self.destroy
+    #   end
+    # end
+    # 
+    # def teardown
+    #   @q.delete
+    #   super
+    # end
+    
   end
 end

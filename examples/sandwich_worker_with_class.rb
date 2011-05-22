@@ -22,7 +22,7 @@ class SandwichWorker < Cloudist::Worker
     job.started!
     (1..5).each do |i|
       job.progress(i * 20)
-      # sleep(1)
+      sleep(1)
       
       # raise ArgumentError, "NOT GOOD!" if i == 4
     end
@@ -32,6 +32,6 @@ end
 
 Cloudist.signal_trap!
 
-Cloudist.start(:heartbeat => 10, :logging => false) {
+Cloudist.start(:logging => false) {
   Cloudist.handle('make.sandwich').with(SandwichWorker)
 }

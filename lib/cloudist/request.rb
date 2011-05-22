@@ -32,15 +32,19 @@ module Cloudist
     end
 
     def q
-      qobj.q
+      qobj.queue
     end
 
     def ex
-      qobj.ex
+      qobj.exchange
     end
 
     def mq
-      qobj.mq
+      qobj.channel
+    end
+    
+    def channel
+      mq
     end
 
     def age

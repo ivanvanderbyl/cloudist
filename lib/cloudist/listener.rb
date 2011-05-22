@@ -20,7 +20,6 @@ module Cloudist
         self.reply_queues ||= []
         
         reply_queue = Cloudist::ReplyQueue.new(queue_name)
-        
         reply_queue.subscribe do |request|
           new(request)
         end
@@ -41,15 +40,12 @@ module Cloudist
     
     # We will be initialized everytime a new reply comes through
     def initialize(request)
-      # @job_queue_name
-      # @job_id
       @payload = request.payload
-      
       key = [payload.message_type.to_s, payload.headers[:event]].compact.join(':')
       
       meth, *args = handle_key(key)
       
-      if self.respond_to?(meth)
+      if meth.present? && self.respond_to?(meth)
         if method(meth).arity <= args.size
           call(meth, args.first(method(meth).arity))
         else
@@ -60,6 +56,8 @@ module Cloudist
     
     def handle_key(key)
       key = key.split(':', 2)
+      return [nil, nil] if key.empty?
+      
       method_and_args = [key.shift.to_sym]
       case method_and_args[0]
       when :event
