@@ -4,6 +4,8 @@ gem 'amqp',           '~>0.8.0.rc12'
 gem "json",           "~> 1.4.6"
 gem "i18n"
 gem "activesupport",  "~> 3.0.3"
+gem "hashie"
+gem "uuid"
 
 # Add dependencies to develop your gem here.
 # Include everything needed to run rake, tests, features, etc.

@@ -1,13 +1,13 @@
 module Cloudist
   class ReplyQueue < Cloudist::Queues::BasicQueue
-    def initialize(queue_name, options={})
-      options[:auto_delete] = true
-      options[:nowait] = true
-      
-      @prefetch = 2
-      
-      super(queue_name, options)
-    end
+    # def initialize(queue_name, options={})
+    #   options[:auto_delete] = true
+    #   options[:nowait] = true
+    #   
+    #   @prefetch = 2
+    #   
+    #   super(queue_name, options)
+    # end
     
     
     # def subscribe(amqp_opts={}, opts={})

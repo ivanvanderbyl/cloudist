@@ -25,7 +25,7 @@ class SandwichListener < Cloudist::Listener
   end
   
   def progress(i)
-    # puts "Progress: %1d%" % i
+    puts "Progress: %1d%" % i
   end
   
   def runtime(seconds)
@@ -34,20 +34,24 @@ class SandwichListener < Cloudist::Listener
     puts "--- #{$total_jobs} remaining"
   end
   
+  # def started
+  #   puts "Started"
+  # end
+
   def event(type)
     puts "Event: #{type}"
   end
   
-  def finished
-    # puts "*** Finished ***"
-    if $total_jobs == 0
-      # Cloudist.stop
-    end
-  end
+  # def finished
+  #   # puts "*** Finished ***"
+  #   # if $total_jobs == 0
+  #   #   # Cloudist.stop
+  #   # end
+  # end
   
-  def reply
-    p data
-  end
+  # def reply
+  #   # p data
+  # end
   
 end
 
@@ -61,6 +65,7 @@ Cloudist.start(:logging => true) {
     $total_jobs = job_count
     job_count.times { |i| 
       log.info("Dispatching sandwich making job...")
+      puts "*** Please ensure you have a worker running ***"
       enqueue('make.sandwich', {:bread => 'white', :sandwich_number => i})
     }
   end

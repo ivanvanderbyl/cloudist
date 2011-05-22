@@ -7,7 +7,7 @@ module Cloudist
     attr_reader :body, :publish_opts, :headers, :timestamp
 
     def initialize(body, headers = {}, publish_opts = {})
-      @publish_opts, @headers = publish_opts, headers
+      @publish_opts, @headers = publish_opts, Hashie::Mash.new(headers)
       @published = false
       
       body = parse_message(body) if body.is_a?(String)
@@ -17,7 +17,8 @@ module Cloudist
       @timestamp = Time.now.to_f
       
       @body = body
-      # HashWithIndifferentAccess.new(body)
+      # Hashie::Mash.new(body)
+      
       update_headers
     end
 
@@ -91,7 +92,7 @@ module Cloudist
     end
     
     def set_reply_to(queue_name)
-      headers[:reply_to] = reply_name(queue_name)
+      headers["reply_to"] = reply_name(queue_name)
       set_master_queue_name(queue_name)
     end
     
@@ -105,15 +106,15 @@ module Cloudist
     end
     
     def reply_to
-      headers[:reply_to]
+      headers["reply_to"]
     end
     
     def message_type
-      headers[:message_type]
+      headers["message_type"]
     end
     
     def event_hash
-      @event_hash ||= headers[:event_hash] || body.is_a?(Hash) && body.delete(:event_hash) || create_event_hash
+      @event_hash ||= headers["event_hash"] || body.is_a?(Hash) && body.delete("event_hash") || create_event_hash
     end
     
     def create_event_hash

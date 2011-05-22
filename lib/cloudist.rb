@@ -1,11 +1,10 @@
 require 'uri'
 require 'json' unless defined? ActiveSupport::JSON
-
-# $:.unshift "/Users/ivan/dev/ruby/amqp/lib"
 require "amqp"
-
+require "hashie"
 require "logger"
 require "digest/md5"
+require "uuid"
 
 $:.unshift File.dirname(__FILE__)
 require "cloudist/core_ext/string"
@@ -28,6 +27,7 @@ require "cloudist/worker"
 
 module Cloudist
   class << self
+    @@queues = {}
     
     @@workers = {}
     
@@ -202,21 +202,21 @@ module Cloudist
     # 
     # Usage: Cloudist.reply('make.sandwich', {:sandwhich_id => 12345})
     # 
-    def reply(queue_name, job_id, data, options = {})
-      headers = {
-        :message_id => job_id,
-        :message_type => "reply",
-        # :event => 'working',
-        :message_type => 'reply'
-      }.update(options)
-
-      payload = Cloudist::Payload.new(data, headers)
-
-      queue = Cloudist::SyncReplyQueue.new(queue_name)
-
-      queue.setup
-      queue.publish_to_q(payload)
-    end
+    # def reply(queue_name, job_id, data, options = {})
+    #   headers = {
+    #     :message_id => job_id,
+    #     :message_type => "reply",
+    #     # :event => 'working',
+    #     :message_type => 'reply'
+    #   }.update(options)
+    # 
+    #   payload = Cloudist::Payload.new(data, headers)
+    # 
+    #   queue = Cloudist::SyncReplyQueue.new(queue_name)
+    # 
+    #   queue.setup
+    #   queue.publish_to_q(payload)
+    # end
 
     # Call this at anytime inside the loop to exit the app.
     def stop_safely

@@ -12,29 +12,31 @@ module Cloudist
       alias :mq :channel
       
       def initialize(queue_name, options = {})
-        self.prefetch ||= options.delete(:prefetch) || 1
+        @prefetch ||= options.delete(:prefetch) || 1
         
         options = {
           :auto_delete => true,
-          :durable => false
+          :durable => false,
+          :nowait => true
         }.update(options)
 
         @queue_name, @options = queue_name, options
+        
+        setup
       end
 
       def setup
         return if @setup.eql?(true)
         
         @channel ||= AMQP::Channel.new(Cloudist.connection) do
+          puts "Setting Prefetch to #{self.prefetch}"
           channel.prefetch(self.prefetch, false) if self.prefetch.present?
         end
         
         @queue = @channel.queue(queue_name, options)
         
         setup_exchange
-
-        # queue.bind(exchange) if exchange
-
+        
         @setup = true
       end
       
@@ -58,25 +60,30 @@ module Cloudist
       end
       
       def subscribe(&block)
-        setup
-        
         queue.subscribe(:ack => true) do |queue_header, encoded_message|
           # next if Cloudist.closing?
 
           request = Cloudist::Request.new(self, encoded_message, queue_header)
+          
+          handle_request = proc {
+            begin
+              raise Cloudist::ExpiredMessage if request.expired?
+              # yield request if block_given?
+              block.call(request)
 
-          begin
-            raise Cloudist::ExpiredMessage if request.expired?
-            yield request if block_given?
+            rescue Cloudist::ExpiredMessage
+              log.error "AMQP Message Timeout: #{tag} ttl=#{request.ttl} age=#{request.age}"
 
-          rescue Cloudist::ExpiredMessage
-            log.error "AMQP Message Timeout: #{tag} ttl=#{request.ttl} age=#{request.age}"
-
-          rescue => e
-            Cloudist.handle_error(e)
-          ensure
+            rescue => e
+              Cloudist.handle_error(e)
+            end
+          }
+          
+          handle_ack = proc {
             request.ack
-          end
+          }
+          
+          EM.defer(handle_request, handle_ack)
         end
         log.info "AMQP Subscribed: #{tag}"
         self

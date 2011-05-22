@@ -37,8 +37,7 @@ module Cloudist
       reply_payload = Payload.new(body, headers)
       
       reply_queue = ReplyQueue.new(payload.reply_to)
-      reply_queue.setup
-      published_headers = reply_queue.publish_to_q(reply_payload)
+      published_headers = reply_queue.publish(reply_payload)
       
       # log.debug("Replying: #{body.inspect} HEADERS: #{headers.inspect}")
       reply_payload
@@ -52,7 +51,7 @@ module Cloudist
     end
     
     def event(event_name, event_data = {}, options = {})
-      event_data = {} if event_data.nil?
+      event_data ||= {}
       reply(event_data, {:event => event_name, :message_type => 'event'}, options)
     end
     
