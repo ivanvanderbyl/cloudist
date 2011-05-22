@@ -1,7 +1,6 @@
 require "active_support"
 module Cloudist
   class Listener
-    include Cloudist::CallbackMethods
     include ActiveSupport::Callbacks
     
     attr_reader :job_queue_name, :payload
@@ -38,8 +37,13 @@ module Cloudist
     
     define_callbacks :call, :rescuable => true
     
+    def initialize(queue_name)
+      puts "Added Listener #{Cloudist.listeners.inspect}"
+    end
+    
     # We will be initialized everytime a new reply comes through
-    def initialize(request)
+    def handle(request)
+      puts "New Listener Instance - #{ObjectSpace.each_object(Cloudist::Listener) {}}"
       @payload = request.payload
       key = [payload.message_type.to_s, payload.headers[:event]].compact.join(':')
       
@@ -52,6 +56,10 @@ module Cloudist
           raise ArgumentError, "Unable to fire callback (#{meth}) because we don't have enough args"
         end
       end
+    end
+    
+    def id
+      payload.id
     end
     
     def handle_key(key)

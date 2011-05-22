@@ -3,6 +3,33 @@ require 'cloudist/core_ext/module'
 
 # Extracted from ActiveSupport 3.0
 class Class
+  
+  # Taken from http://coderrr.wordpress.com/2008/04/10/lets-stop-polluting-the-threadcurrent-hash/
+  def thread_local_accessor name, options = {}
+    m = Module.new
+    m.module_eval do
+      class_variable_set :"@@#{name}", Hash.new {|h,k| h[k] = options[:default] }
+    end
+    m.module_eval %{
+      FINALIZER = lambda {|id| @@#{name}.delete id }
+
+      def #{name}
+        @@#{name}[Thread.current.object_id]
+      end
+
+      def #{name}=(val)
+        ObjectSpace.define_finalizer Thread.current, FINALIZER  unless @@#{name}.has_key? Thread.current.object_id
+        @@#{name}[Thread.current.object_id] = val
+      end
+    }
+
+    class_eval do
+      include m
+      extend m
+    end
+  end
+  
+  
   # Declare a class-level attribute whose value is inheritable by subclasses.
   # Subclasses can change their own value and it will not impact parent class.
   #

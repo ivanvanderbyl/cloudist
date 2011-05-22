@@ -42,7 +42,7 @@ module Cloudist
       }.update(headers)
       
       reply_payload = Payload.new(body, headers)
-      published_headers = reply_queue.publish_to_q(reply_payload)
+      published_headers = reply_queue.publish(reply_payload)
       
       reply_payload
     end

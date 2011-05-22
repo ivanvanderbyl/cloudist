@@ -16,12 +16,12 @@ require "cloudist"
 $total_jobs = 0
 
 class SandwichListener < Cloudist::Listener
-  listen_to "make.sandwich"
+  listen_to "make.sandwich", "eat.sandwich"
   
   # before :find_job
   
   def find_job
-    puts "--- #{job_id}"
+    puts "--- #{id}"
   end
   
   def progress(i)
@@ -29,7 +29,7 @@ class SandwichListener < Cloudist::Listener
   end
   
   def runtime(seconds)
-    puts "#{job_id} Finished job in #{seconds} seconds"
+    puts "#{id} Finished job in #{seconds} seconds"
     $total_jobs -= 1
     puts "--- #{$total_jobs} remaining"
   end

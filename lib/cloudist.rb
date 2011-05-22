@@ -14,24 +14,26 @@ require "cloudist/core_ext/object"
 require "cloudist/core_ext/class"
 require "cloudist/errors"
 require "cloudist/utils"
+require "cloudist/encoding"
 require "cloudist/queues/basic_queue"
 require "cloudist/queues/job_queue"
 require "cloudist/queues/reply_queue"
 require "cloudist/publisher"
 require "cloudist/payload"
 require "cloudist/request"
-require "cloudist/callback_methods"
 require "cloudist/listener"
-require "cloudist/callback"
-require "cloudist/callbacks/error_callback"
 require "cloudist/job"
 require "cloudist/worker"
 
 module Cloudist
+  DEFAULT_TTL = 300
+  
   class << self
     @@queues = {}
-    
     @@workers = {}
+    @@listeners = {}
+    # thread_local_accessor :listeners, :default => {}
+    # thread_local_accessor :workers, :default => {}
     
     # Start the Cloudist loop
     # 
@@ -127,29 +129,27 @@ module Cloudist
       job_queue = JobQueue.new(queue_name)
       job_queue.subscribe do |request|
         j = Job.new(request.payload.dup)
-        # EM.defer do
-          begin
-            if block_given?
-              worker_instance = GenericWorker.new(j, job_queue.q)
-              worker_instance.process(&block)
-            elsif klass
-              worker_instance = klass.new(j, job_queue.q)
-              worker_instance.process
-            else
-              raise RuntimeError, "Failed to register worker, I need either a handler class or block."
-            end
-          rescue Exception => e
-            j.handle_error(e)
-          ensure
-            finished = Time.now.utc.to_f
-            log.debug("Finished Job in #{finished - request.start} seconds")
-            j.reply({:runtime => (finished - request.start)}, {:message_type => 'runtime'})
-            j.cleanup
+        begin
+          if block_given?
+            worker_instance = GenericWorker.new(j, job_queue.q)
+            worker_instance.process(&block)
+          elsif klass
+            worker_instance = klass.new(j, job_queue.q)
+            worker_instance.process
+          else
+            raise RuntimeError, "Failed to register worker, I need either a handler class or block."
           end
-        # end
+        rescue Exception => e
+          j.handle_error(e)
+        ensure
+          finished = Time.now.utc.to_f
+          log.debug("Finished Job in #{finished - request.start} seconds")
+          j.reply({:runtime => (finished - request.start)}, {:message_type => 'runtime'})
+          j.cleanup
+        end
       end
       
-      ((@@workers[queue_name.to_s] ||= []) << job_queue).uniq!
+      ((self.workers[queue_name.to_s] ||= []) << job_queue).uniq!
     end
     
     # Accepts either a queue name or a job instance returned from enqueue.
@@ -174,18 +174,19 @@ module Cloudist
     
     # Adds a listener class
     def add_listener(klass)
-      @@listeners ||= []
-      
       raise ArgumentError, "Your listener must extend Cloudist::Listener" unless klass.superclass == Cloudist::Listener
       raise ArgumentError, "Your listener must declare at least one queue to listen to. Use listen_to 'queue.name'" if klass.job_queue_names.nil?
       
       klass.job_queue_names.each do |queue_name|
-        klass.subscribe(queue_name)
+        # klass.subscribe(queue_name)
+        p queue_name
+        # self.listeners[queue_name.to_s] = klass.new(queue_name)
       end
       
-      @@listeners << klass
+      # instance = klass.new
+      # self.listeners[klass.name] = instance
       
-      return @@listeners
+      # return self.listeners
     end
     
     # Enqueues a job.
@@ -223,11 +224,9 @@ module Cloudist
     # Call this at anytime inside the loop to exit the app.
     def stop_safely
       if EM.reactor_running?
-        ::EM.add_timer(0.2) { 
-          ::AMQP.stop { 
-            ::EM.stop
-            puts "\n"
-          }
+        ::AMQP.stop { 
+          ::EM.stop
+          puts "\n"
         }
       end
     end
@@ -273,14 +272,20 @@ module Cloudist
       ::Signal.trap('TERM'){ Cloudist.stop }
     end
     
-    alias :install_signal_trap :signal_trap!
-    
-    def workers
-      @@workers
+    def log
+      @@log ||= Logger.new($stdout)
+    end
+
+    def log=(log)
+      @@log = log
     end
     
+    alias :install_signal_trap :signal_trap!
+    
     def remove_workers
-      @@workers = {}
+      # self.workers.each_pair do |worker, handler|
+      #   self.workers.delete(worker)
+      # end
     end
     
   end
