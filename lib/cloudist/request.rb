@@ -10,8 +10,8 @@ module Cloudist
       @body = decode(encoded_body)
       @headers = parse_custom_headers(queue_header)
       
-      # @payload = Cloudist::Payload.new(encoded_body, queue_header.headers.dup)
-      # @headers = @payload.parse_custom_headers
+      @payload = Cloudist::Payload.new(encoded_body, queue_header.headers.dup)
+      @headers = @payload.parse_custom_headers
 
       @start = Time.now.utc.to_f
     end
