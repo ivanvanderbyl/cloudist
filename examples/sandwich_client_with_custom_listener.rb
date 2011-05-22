@@ -21,7 +21,7 @@ class SandwichListener < Cloudist::Listener
   before :find_command
   
   def find_command
-    # puts "--- #{job_id}"
+    puts "--- #{job_id}"
   end
   
   def progress(i)
@@ -54,7 +54,7 @@ end
 
 Cloudist.signal_trap!
 
-Cloudist.start(:logging => false, :heartbeat => 60) {
+Cloudist.start(:logging => true) {
   
   unless ARGV.empty?
     job_count = ARGV.pop.to_i
