@@ -8,10 +8,14 @@ GIT
 GEM
   remote: http://rubygems.org/
   specs:
-    activesupport (3.0.4)
-    amqp (0.6.7)
-      eventmachine (>= 0.12.4)
-    bunny (0.6.0)
+    activesupport (3.0.7)
+    amq-client (0.7.0.alpha25)
+      amq-protocol
+      eventmachine
+    amq-protocol (0.5.0)
+    amqp (0.8.0.rc12)
+      amq-client (>= 0.7.0.alpha25)
+      eventmachine
     diff-lcs (1.1.2)
     eventmachine (0.12.10)
     git (1.2.5)
@@ -22,7 +26,7 @@ GEM
       rake
     json (1.4.6)
     mocha (0.9.12)
-    rake (0.8.7)
+    rake (0.9.0)
     rcov (0.9.9)
     reek (1.2.8)
       ruby2ruby (~> 1.2)
@@ -50,9 +54,8 @@ PLATFORMS
 
 DEPENDENCIES
   activesupport (~> 3.0.3)
-  amqp (= 0.6.7)
+  amqp (~> 0.8.0.rc12)
   bundler (~> 1.0.0)
-  bunny
   i18n
   jeweler (~> 1.5.2)
   json (~> 1.4.6)
