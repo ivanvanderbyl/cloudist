@@ -3,7 +3,6 @@ require 'json' unless defined? ActiveSupport::JSON
 
 # $:.unshift "/Users/ivan/dev/ruby/amqp/lib"
 require "amqp"
-require "mq"
 
 require "logger"
 require "digest/md5"
@@ -15,12 +14,8 @@ require "cloudist/core_ext/class"
 require "cloudist/errors"
 require "cloudist/utils"
 require "cloudist/queues/basic_queue"
-require "cloudist/queues/sync_queue"
 require "cloudist/queues/job_queue"
-require "cloudist/queues/sync_job_queue"
 require "cloudist/queues/reply_queue"
-require "cloudist/queues/sync_reply_queue"
-require "cloudist/queues/log_queue"
 require "cloudist/publisher"
 require "cloudist/payload"
 require "cloudist/request"
@@ -48,7 +43,7 @@ module Cloudist
     # * :host => 'localhost'
     # * :port => 5672
     # * :vhost => /
-    # * :heartbeat => 5
+    # * :heartbeat => 0
     # * :logging => false
     # 
     # Refer to default config below for how to set these as defaults
@@ -58,6 +53,14 @@ module Cloudist
       AMQP.start(config) do
         self.instance_eval(&block) if block_given?
       end
+    end
+    
+    def connection
+      AMQP.connection
+    end
+    
+    def connection=(conn)
+      AMQP.connection = conn
     end
 
     # Define a worker. Must be called inside start loop
@@ -122,7 +125,7 @@ module Cloudist
       job_queue = JobQueue.new(queue_name)
       job_queue.subscribe do |request|
         j = Job.new(request.payload.dup)
-        EM.defer do
+        # EM.defer do
           begin
             if block_given?
               worker_instance = GenericWorker.new(j, job_queue.q)
@@ -141,7 +144,7 @@ module Cloudist
             j.reply({:runtime => (finished - request.start)}, {:message_type => 'runtime'})
             j.cleanup
           end
-        end
+        # end
       end
       
       ((@@workers[queue_name.to_s] ||= []) << job_queue).uniq!
@@ -257,7 +260,7 @@ module Cloudist
         :user => uri.user,
         :port => uri.port || 5672,
         :pass => uri.password,
-        :heartbeat => 5,
+        :heartbeat => 0,
         :logging => false
       }
     rescue Object => e
