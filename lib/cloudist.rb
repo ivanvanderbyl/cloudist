@@ -29,11 +29,10 @@ module Cloudist
   DEFAULT_TTL = 300
   
   class << self
-    @@queues = {}
-    @@workers = {}
-    @@listeners = {}
-    # thread_local_accessor :listeners, :default => {}
-    # thread_local_accessor :workers, :default => {}
+    thread_local_accessor :channels, :default => {}
+    thread_local_accessor :workers, :default => {}
+    thread_local_accessor :listeners, :default => []
+    thread_local_accessor :listener_instances, :default => {}
     
     # Start the Cloudist loop
     # 
