@@ -21,12 +21,16 @@ module Cloudist
       payload.body
     end
     
+    def body
+      data
+    end
+    
     def log
       Cloudist.log
     end
     
     def cleanup
-      
+      # :noop
     end
     
     def reply(body, headers = {}, options = {})
@@ -37,7 +41,7 @@ module Cloudist
       }.update(options)
       
       headers = {
-        :message_id => payload.headers[:message_id],
+        :message_id => payload.id,
         :message_type => "reply"
       }.update(headers)
       
