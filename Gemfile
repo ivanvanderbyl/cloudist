@@ -10,6 +10,7 @@ gem "uuid"
 # Add dependencies to develop your gem here.
 # Include everything needed to run rake, tests, features, etc.
 group :development do
+  gem "rake",         "~> 0.8.7"
   gem "rspec",        "~> 2.3.0"
   gem "moqueue",      :git => "git://github.com/ivanvanderbyl/moqueue.git"
   gem "mocha"
