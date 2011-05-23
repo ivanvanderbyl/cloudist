@@ -9,9 +9,9 @@ module Cloudist
     # end
     
     # def setup_exchange
-    #       @exchange = channel.direct(queue_name)
-    #       queue.bind(exchange)
-    #     end
+    #   @exchange = channel.direct(queue_name)
+    #   queue.bind(exchange)
+    # end
     
   end
 end

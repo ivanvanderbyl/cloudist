@@ -106,17 +106,15 @@ module Cloudist
 
       def publish(payload)
         payload.set_reply_to(queue_name)
-        body, headers = payload.formatted
+        body, headers = payload.to_a
         headers.merge!(:routing_key => queue.name)
         exchange.publish(body, headers)
-        payload.publish
       end
 
       def publish_to_q(payload)
-        body, headers = payload.formatted
+        body, headers = payload.to_a
         # headers.merge!(:routing_key => queue.name)
         queue.publish(body, headers)
-        payload.publish
         return headers
       end
 

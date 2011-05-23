@@ -1,24 +1,23 @@
 module Cloudist
   class ReplyQueue < Cloudist::Queues::BasicQueue
-    # def initialize(queue_name, options={})
-    #   options[:auto_delete] = true
-    #   options[:nowait] = true
-    #   
-    #   @prefetch = 2
-    #   
-    #   super(queue_name, options)
-    # end
+    def initialize(queue_name, options={})
+      options[:auto_delete] = true
+      options[:nowait] = true
+      
+      @prefetch = 2
+      
+      super(queue_name, options)
+    end
     
-    
-    # def subscribe(amqp_opts={}, opts={})
-    #   super(amqp_opts, opts) do |request|
+    # def subscribe(&block)
+    #   super do |request|
     #     yield request if block_given?
-    #     self.destroy
+    #     teardown
     #   end
     # end
-    # 
+    
     # def teardown
-    #   @q.delete
+    #   queue.delete
     #   super
     # end
     
