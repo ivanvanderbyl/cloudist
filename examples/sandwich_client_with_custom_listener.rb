@@ -51,10 +51,9 @@ class SandwichListener < Cloudist::Listener
     end
   end
   
-  # def reply
-  #   # p data
-  # end
-  
+  def error(e)
+    puts "#{e.exception}: #{e.message} (#{e.backtrace.first})"
+  end
 end
 
 
