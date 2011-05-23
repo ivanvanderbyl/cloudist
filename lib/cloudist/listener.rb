@@ -4,9 +4,7 @@ module Cloudist
     include ActiveSupport::Callbacks
     
     attr_reader :job_queue_name, :payload
-    
     class_attribute :job_queue_names
-    class_attribute :reply_queues
     
     class << self
       def listen_to(*job_queue_names)
@@ -15,15 +13,14 @@ module Cloudist
       
       def subscribe(queue_name)
         raise RuntimeError, "You can't subscribe until EM is running" unless EM.reactor_running?
-        puts "Listen: #{queue_name}"
-        self.reply_queues ||= []
-        
+                
         reply_queue = Cloudist::ReplyQueue.new(queue_name)
         reply_queue.subscribe do |request|
-          new(request)
+          instance = Cloudist.listener_instances[queue_name] ||= new
+          instance.handle_request(request)
         end
         
-        self.reply_queues << reply_queue
+        queue_name
       end
       
       def before(*args, &block)
@@ -37,13 +34,7 @@ module Cloudist
     
     define_callbacks :call, :rescuable => true
     
-    def initialize(queue_name)
-      puts "Added Listener #{Cloudist.listeners.inspect}"
-    end
-    
-    # We will be initialized everytime a new reply comes through
-    def handle(request)
-      puts "New Listener Instance - #{ObjectSpace.each_object(Cloudist::Listener) {}}"
+    def handle_request(request)
       @payload = request.payload
       key = [payload.message_type.to_s, payload.headers[:event]].compact.join(':')
       
@@ -60,6 +51,10 @@ module Cloudist
     
     def id
       payload.id
+    end
+    
+    def data
+      payload.body
     end
     
     def handle_key(key)
@@ -86,7 +81,8 @@ module Cloudist
       when :update
         
       when :error
-        method_and_args << Cloudist::SafeError.new(payload)
+        # method_and_args << Cloudist::SafeError.new(payload)
+        method_and_args << Hashie::Mash.new(payload.body)
         
       when :log
         method_and_args << payload.message
