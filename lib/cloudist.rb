@@ -161,14 +161,6 @@ module Cloudist
     # 
     def listen(*queue_names, &block)
       raise NotImplementedError, "This DSL method has been removed. Please use add_listener"
-      
-      # @@listeners ||= []
-      # queue_names.each do |job_or_queue_name|
-      #   _listener = Cloudist::Listener.new(job_or_queue_name)
-      #   _listener.subscribe(&block)
-      #   @@listeners << _listener
-      # end
-      # return @@listeners
     end
     
     # Adds a listener class
@@ -177,15 +169,12 @@ module Cloudist
       raise ArgumentError, "Your listener must declare at least one queue to listen to. Use listen_to 'queue.name'" if klass.job_queue_names.nil?
       
       klass.job_queue_names.each do |queue_name|
-        # klass.subscribe(queue_name)
-        p queue_name
-        # self.listeners[queue_name.to_s] = klass.new(queue_name)
+        klass.subscribe(queue_name)
       end
       
-      # instance = klass.new
-      # self.listeners[klass.name] = instance
+      self.listeners << klass
       
-      # return self.listeners
+      return self.listeners
     end
     
     # Enqueues a job.
