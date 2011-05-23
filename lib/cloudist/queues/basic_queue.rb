@@ -33,7 +33,6 @@ module Cloudist
         return if @setup.eql?(true)
         
         @channel ||= AMQP::Channel.new(Cloudist.connection) do
-          puts "Setting Prefetch to #{self.prefetch}"
           channel.prefetch(self.prefetch, false) if self.prefetch.present?
         end
         
