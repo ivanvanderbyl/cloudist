@@ -212,9 +212,11 @@ module Cloudist
     # Call this at anytime inside the loop to exit the app.
     def stop_safely
       if EM.reactor_running?
-        ::AMQP.stop { 
-          ::EM.stop
-          puts "\n"
+        ::EM.add_timer(0.2) { 
+          ::AMQP.stop { 
+            ::EM.stop
+            puts "\n"
+          }
         }
       end
     end
