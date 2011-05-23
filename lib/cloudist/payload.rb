@@ -36,6 +36,8 @@ module Cloudist
     
     def parse_headers!
       headers[:published_on] ||= body.delete("timestamp") || timestamp
+      headers[:message_type] ||= body.delete("message_type") || 'reply'
+      
       headers[:ttl] ||= Cloudist::DEFAULT_TTL
       headers[:message_id] = id
       
