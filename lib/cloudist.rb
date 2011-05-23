@@ -271,9 +271,9 @@ module Cloudist
     alias :install_signal_trap :signal_trap!
     
     def remove_workers
-      # self.workers.each_pair do |worker, handler|
-      #   self.workers.delete(worker)
-      # end
+      self.workers.keys.each do |worker|
+        self.workers.delete(worker)
+      end
     end
     
   end
