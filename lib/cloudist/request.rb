@@ -11,7 +11,7 @@ module Cloudist
       @headers = parse_custom_headers(queue_header)
       
       @payload = Cloudist::Payload.new(encoded_body, queue_header.headers.dup)
-      @headers = @payload.parse_custom_headers
+      @headers = @payload.headers
 
       @start = Time.now.utc.to_f
     end
