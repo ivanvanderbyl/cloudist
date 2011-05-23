@@ -8,12 +8,16 @@ GIT
 GEM
   remote: http://rubygems.org/
   specs:
-    activesupport (3.0.4)
-    amqp (0.7.1)
-      eventmachine (>= 0.12.4)
-    bunny (0.6.0)
+    activesupport (3.0.7)
+    amq-client (0.7.0.alpha25)
+      amq-protocol
+      eventmachine
+    amq-protocol (0.5.0)
+    amqp (0.8.0.rc12)
+      amq-client (>= 0.7.0.alpha25)
+      eventmachine
     diff-lcs (1.1.2)
-    eventmachine (1.0.0.beta.3)
+    eventmachine (0.12.10)
     git (1.2.5)
     hashie (1.0.0)
     i18n (0.5.0)
@@ -24,7 +28,7 @@ GEM
     json (1.4.6)
     macaddr (1.0.0)
     mocha (0.9.12)
-    rake (0.8.7)
+    rake (0.9.0)
     rcov (0.9.9)
     reek (1.2.8)
       ruby2ruby (~> 1.2)
@@ -46,7 +50,6 @@ GEM
     ruby_parser (2.0.6)
       sexp_processor (~> 3.0)
     sexp_processor (3.0.5)
-    system_timer (1.0)
     uuid (2.3.2)
       macaddr (~> 1.0)
 
@@ -55,10 +58,8 @@ PLATFORMS
 
 DEPENDENCIES
   activesupport (~> 3.0.3)
-  amqp (>= 0.7.1)
+  amqp (~> 0.8.0.rc12)
   bundler (~> 1.0.0)
-  bunny
-  eventmachine (= 1.0.0.beta.3)
   hashie
   i18n
   jeweler (~> 1.5.2)
@@ -69,5 +70,4 @@ DEPENDENCIES
   reek (~> 1.2.8)
   roodi (~> 2.1.0)
   rspec (~> 2.3.0)
-  system_timer
   uuid

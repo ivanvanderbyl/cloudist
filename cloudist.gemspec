@@ -9,7 +9,7 @@ Gem::Specification.new do |s|
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Ivan Vanderbyl"]
-  s.date = %q{2011-04-08}
+  s.date = %q{2011-05-22}
   s.description = %q{Cloudist is a simple, highly scalable job queue for Ruby applications, it can run within Rails, DaemonKit or your own custom application. Refer to github page for examples}
   s.email = %q{ivanvanderbyl@me.com}
   s.extra_rdoc_files = [
@@ -26,13 +26,11 @@ Gem::Specification.new do |s|
     "Rakefile",
     "VERSION",
     "cloudist.gemspec",
-    "examples/extending_values.rb",
     "examples/queue_message.rb",
     "examples/sandwich_client.rb",
     "examples/sandwich_client_with_custom_listener.rb",
     "examples/sandwich_worker.rb",
     "examples/sandwich_worker_with_class.rb",
-    "examples/sync_enqueue_make_sandwhich.rb",
     "lib/cloudist.rb",
     "lib/cloudist/callback.rb",
     "lib/cloudist/callback_methods.rb",
@@ -45,16 +43,11 @@ Gem::Specification.new do |s|
     "lib/cloudist/errors.rb",
     "lib/cloudist/job.rb",
     "lib/cloudist/listener.rb",
-    "lib/cloudist/listener_old.rb",
     "lib/cloudist/payload.rb",
     "lib/cloudist/publisher.rb",
     "lib/cloudist/queues/basic_queue.rb",
     "lib/cloudist/queues/job_queue.rb",
-    "lib/cloudist/queues/log_queue.rb",
     "lib/cloudist/queues/reply_queue.rb",
-    "lib/cloudist/queues/sync_job_queue.rb",
-    "lib/cloudist/queues/sync_queue.rb",
-    "lib/cloudist/queues/sync_reply_queue.rb",
     "lib/cloudist/request.rb",
     "lib/cloudist/utils.rb",
     "lib/cloudist/worker.rb",
@@ -73,13 +66,11 @@ Gem::Specification.new do |s|
   s.rubygems_version = %q{1.6.2}
   s.summary = %q{Super fast job queue using AMQP}
   s.test_files = [
-    "examples/extending_values.rb",
     "examples/queue_message.rb",
     "examples/sandwich_client.rb",
     "examples/sandwich_client_with_custom_listener.rb",
     "examples/sandwich_worker.rb",
     "examples/sandwich_worker_with_class.rb",
-    "examples/sync_enqueue_make_sandwhich.rb",
     "spec/cloudist/basic_queue_spec.rb",
     "spec/cloudist/job_spec.rb",
     "spec/cloudist/payload_spec.rb",
@@ -94,11 +85,12 @@ Gem::Specification.new do |s|
     s.specification_version = 3
 
     if Gem::Version.new(Gem::VERSION) >= Gem::Version.new('1.2.0') then
-      s.add_runtime_dependency(%q<amqp>, [">= 0.7.1"])
-      s.add_runtime_dependency(%q<bunny>, [">= 0"])
+      s.add_runtime_dependency(%q<amqp>, ["~> 0.8.0.rc12"])
       s.add_runtime_dependency(%q<json>, ["~> 1.4.6"])
       s.add_runtime_dependency(%q<i18n>, [">= 0"])
       s.add_runtime_dependency(%q<activesupport>, ["~> 3.0.3"])
+      s.add_runtime_dependency(%q<hashie>, [">= 0"])
+      s.add_runtime_dependency(%q<uuid>, [">= 0"])
       s.add_development_dependency(%q<rspec>, ["~> 2.3.0"])
       s.add_development_dependency(%q<moqueue>, [">= 0"])
       s.add_development_dependency(%q<mocha>, [">= 0"])
@@ -108,11 +100,12 @@ Gem::Specification.new do |s|
       s.add_development_dependency(%q<reek>, ["~> 1.2.8"])
       s.add_development_dependency(%q<roodi>, ["~> 2.1.0"])
     else
-      s.add_dependency(%q<amqp>, [">= 0.7.1"])
-      s.add_dependency(%q<bunny>, [">= 0"])
+      s.add_dependency(%q<amqp>, ["~> 0.8.0.rc12"])
       s.add_dependency(%q<json>, ["~> 1.4.6"])
       s.add_dependency(%q<i18n>, [">= 0"])
       s.add_dependency(%q<activesupport>, ["~> 3.0.3"])
+      s.add_dependency(%q<hashie>, [">= 0"])
+      s.add_dependency(%q<uuid>, [">= 0"])
       s.add_dependency(%q<rspec>, ["~> 2.3.0"])
       s.add_dependency(%q<moqueue>, [">= 0"])
       s.add_dependency(%q<mocha>, [">= 0"])
@@ -123,11 +116,12 @@ Gem::Specification.new do |s|
       s.add_dependency(%q<roodi>, ["~> 2.1.0"])
     end
   else
-    s.add_dependency(%q<amqp>, [">= 0.7.1"])
-    s.add_dependency(%q<bunny>, [">= 0"])
+    s.add_dependency(%q<amqp>, ["~> 0.8.0.rc12"])
     s.add_dependency(%q<json>, ["~> 1.4.6"])
     s.add_dependency(%q<i18n>, [">= 0"])
     s.add_dependency(%q<activesupport>, ["~> 3.0.3"])
+    s.add_dependency(%q<hashie>, [">= 0"])
+    s.add_dependency(%q<uuid>, [">= 0"])
     s.add_dependency(%q<rspec>, ["~> 2.3.0"])
     s.add_dependency(%q<moqueue>, [">= 0"])
     s.add_dependency(%q<mocha>, [">= 0"])

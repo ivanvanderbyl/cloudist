@@ -65,7 +65,7 @@ describe Cloudist::Payload do
   
   it "should format payload for sending" do
     payload = Cloudist::Payload.new({:bread => 'white'}, {:event_hash => 'foo', :message_type => 'reply'})
-    body, popts = payload.formatted
+    body, popts = payload.to_a
     headers = popts[:headers]
     
     body.should == Marshal.dump({:bread => 'white'})
@@ -105,7 +105,7 @@ describe Cloudist::Payload do
     payload.set_reply_to("my_custom_queue")
     payload.headers[:reply_to].should_not be_nil
     payload.headers[:reply_to].should match /^temp\.reply\.my_custom_queue/
-    body, popts = payload.formatted
+    body, popts = payload.to_a
     headers = popts[:headers]
     headers[:reply_to].should == payload.headers[:reply_to]
   end

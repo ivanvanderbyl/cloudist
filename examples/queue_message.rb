@@ -2,16 +2,16 @@ $:.unshift File.dirname(__FILE__) + '/../lib'
 require "rubygems"
 require "cloudist"
 
-::Signal.trap('INT') { Cloudist.stop }
-::Signal.trap('TERM'){ Cloudist.stop }
-
+Cloudist.signal_trap!
+# 
+# This demonstrates how to send a message to a listener
+# 
 Cloudist.start {
   
-  payload = Cloudist::Payload.new({:event => "started"})
+  payload = Cloudist::Payload.new(:event => :started, :message_type => 'event')
   
   q = Cloudist::ReplyQueue.new('temp.reply.make.sandwich')
-  q.setup
-  q.publish_to_q(payload)
+  q.publish(payload)
   
   stop
 }

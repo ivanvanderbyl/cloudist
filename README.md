@@ -1,3 +1,5 @@
+![Cloudist](https://github.com/ivanvanderbyl/cloudist/raw/master/doc/cloudist.png)
+
 Cloudist
 ========
 

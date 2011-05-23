@@ -5,11 +5,7 @@ module Cloudist
       def enqueue(queue_name, data)
         payload = Cloudist::Payload.new(data)
         
-        if EM.reactor_running?
-          queue = Cloudist::JobQueue.new(queue_name)
-        else
-          queue = Cloudist::SyncJobQueue.new(queue_name)
-        end
+        queue = Cloudist::JobQueue.new(queue_name)
         
         queue.setup
         

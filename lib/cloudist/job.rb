@@ -21,12 +21,16 @@ module Cloudist
       payload.body
     end
     
+    def body
+      data
+    end
+    
     def log
       Cloudist.log
     end
     
     def cleanup
-      
+      # :noop
     end
     
     def reply(body, headers = {}, options = {})
@@ -37,12 +41,12 @@ module Cloudist
       }.update(options)
       
       headers = {
-        :message_id => payload.headers[:message_id],
+        :message_id => payload.id,
         :message_type => "reply"
       }.update(headers)
       
       reply_payload = Payload.new(body, headers)
-      published_headers = reply_queue.publish_to_q(reply_payload)
+      published_headers = reply_queue.publish(reply_payload)
       
       reply_payload
     end
@@ -55,7 +59,7 @@ module Cloudist
     end
     
     def event(event_name, event_data = {}, options = {})
-      event_data = {} if event_data.nil?
+      event_data ||= {}
       reply(event_data, {:event => event_name, :message_type => 'event'}, options)
     end
     

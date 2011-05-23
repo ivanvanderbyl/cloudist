@@ -1,10 +1,10 @@
 module Cloudist
   class Worker
     
-    attr_reader :job, :queue
+    attr_reader :job, :queue, :payload
     
     def initialize(job, queue)
-      @job, @queue = job, queue
+      @job, @queue, @payload = job, queue, job.payload
       
       # Do custom initialization
       self.setup if self.respond_to?(:setup)
@@ -16,6 +16,10 @@ module Cloudist
     
     def headers
       job.headers
+    end
+    
+    def id
+      job.id
     end
     
     def process

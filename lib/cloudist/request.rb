@@ -10,8 +10,8 @@ module Cloudist
       @body = decode(encoded_body)
       @headers = parse_custom_headers(queue_header)
       
-      # @payload = Cloudist::Payload.new(encoded_body, queue_header.headers.dup)
-      # @headers = @payload.parse_custom_headers
+      @payload = Cloudist::Payload.new(encoded_body, queue_header.headers.dup)
+      @headers = @payload.headers
 
       @start = Time.now.utc.to_f
     end
@@ -32,15 +32,19 @@ module Cloudist
     end
 
     def q
-      qobj.q
+      qobj.queue
     end
 
     def ex
-      qobj.ex
+      qobj.exchange
     end
 
     def mq
-      qobj.mq
+      qobj.channel
+    end
+    
+    def channel
+      mq
     end
 
     def age
