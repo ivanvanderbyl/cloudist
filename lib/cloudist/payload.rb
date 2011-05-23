@@ -3,7 +3,7 @@ module Cloudist
     include Utils
     include Encoding
     
-    attr_reader :body, :headers, :timestamp
+    attr_reader :body, :headers, :amqp_headers, :timestamp
     
     def initialize(body, headers = {})
       @published = false
@@ -12,7 +12,7 @@ module Cloudist
       body = decode(body) if body.is_a?(String)
       @body = Hashie::Mash.new(decode(body))
       @headers = Hashie::Mash.new(headers)
-      
+      @amqp_headers = {}
       # puts "Initialised Payload: #{id}"
       
       parse_headers!
