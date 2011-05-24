@@ -2,9 +2,9 @@ module Cloudist
   class ReplyQueue < Cloudist::Queues::BasicQueue
     def initialize(queue_name, options={})
       options[:auto_delete] = true
-      options[:nowait] = true
+      options[:nowait] = false
       
-      @prefetch = 2
+      @prefetch = 1
       
       super(queue_name, options)
     end
