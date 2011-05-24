@@ -51,9 +51,14 @@ module Cloudist
     # 
     # Refer to default config below for how to set these as defaults
     # 
-    def start(options = {}, &block)
-      config = settings.update(options)
-      AMQP.start(config) do
+    def start(options_or_connection = {}, &block)
+      if options_or_connection.is_a?(Hash)
+        config = settings.update(options_or_connection)
+        AMQP.start(config) do
+          self.instance_eval(&block) if block_given?
+        end
+      else
+        # self.connection = options_or_connection
         self.instance_eval(&block) if block_given?
       end
     end
