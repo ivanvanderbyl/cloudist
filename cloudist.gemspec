@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = %q{cloudist}
-  s.version = "0.4.1"
+  s.version = "0.4.2"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Ivan Vanderbyl"]
-  s.date = %q{2011-05-23}
+  s.date = %q{2011-05-24}
   s.description = %q{Cloudist is a simple, highly scalable job queue for Ruby applications, it can run within Rails, DaemonKit or your own custom application. Refer to github page for examples}
   s.email = %q{ivanvanderbyl@me.com}
   s.extra_rdoc_files = [
@@ -26,6 +26,7 @@ Gem::Specification.new do |s|
     "Rakefile",
     "VERSION",
     "cloudist.gemspec",
+    "doc/cloudist.png",
     "examples/amqp/Gemfile",
     "examples/amqp/Gemfile.lock",
     "examples/amqp/amqp_consumer.rb",
