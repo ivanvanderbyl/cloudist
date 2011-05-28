@@ -4,7 +4,7 @@ module Cloudist
       options[:auto_delete] = true
       options[:nowait] = false
       
-      @prefetch = 1
+      @prefetch = Cloudist.listener_prefetch
       
       super(queue_name, options)
     end

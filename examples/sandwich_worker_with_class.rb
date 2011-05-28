@@ -47,6 +47,6 @@ end
 
 Cloudist.signal_trap!
 
-Cloudist.start(:logging => false) {
+Cloudist.start(:logging => false, :worker_prefetch => 2) {
   Cloudist.handle('make.sandwich').with(SandwichWorker)
 }

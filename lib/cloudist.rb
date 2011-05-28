@@ -34,6 +34,9 @@ module Cloudist
     thread_local_accessor :listeners, :default => []
     thread_local_accessor :listener_instances, :default => {}
     
+    thread_local_accessor :worker_prefetch, :default => 1
+    thread_local_accessor :listener_prefetch, :default => 1
+    
     # Start the Cloudist loop
     # 
     #   Cloudist.start {
@@ -53,6 +56,7 @@ module Cloudist
     # 
     def start(options_or_connection = {}, &block)
       if options_or_connection.is_a?(Hash)
+        extract_cloudist_options!(options_or_connection)
         config = settings.update(options_or_connection)
         AMQP.start(config) do
           self.instance_eval(&block) if block_given?
@@ -61,6 +65,11 @@ module Cloudist
         # self.connection = options_or_connection
         self.instance_eval(&block) if block_given?
       end
+    end
+    
+    def extract_cloudist_options!(options)
+      self.worker_prefetch =    options.delete(:worker_prefetch) || 1
+      self.listener_prefetch =  options.delete(:listener_prefetch) || 1
     end
     
     def connection
