@@ -30,10 +30,11 @@ The only configuration required to get going are the AMQP settings, these can be
 1. Using the `AMQP_URL` environment variable with value of `amqp://username:password@localhost:5672/vhost`
 
 2. Updating the settings hash manually:
-    
-    
-    Cloudist.settings = {:user => 'guest', :pass => 'password', :vhost => '/', :host => 'localhost', :port => 5672}
-    
+
+```ruby
+Cloudist.settings = {:user => 'guest', :pass => 'password', :vhost => '/', :host => 'localhost', :port => 5672}
+```
+ 
 Now and what's coming
 ---------------------
 
