@@ -34,6 +34,12 @@ The only configuration required to get going are the AMQP settings, these can be
     
     Cloudist.settings = {:user => 'guest', :pass => 'password', :vhost => '/', :host => 'localhost', :port => 5672}
     
+Now and what's coming
+---------------------
+
+Cloudist was developed to provide the messaging layer used within TestPilot [Continuous Integration](http://testpilot.me) service.
+
+TestPilot still uses [Cloudist](http://testpilot.me/ivan/cloudist) heavily and a number of features will be merged in soon.
 
 Acknowledgements
 ----------------
@@ -58,7 +64,7 @@ Contributing to Cloudist
 Authors
 -------
 
-Ivan Vanderbyl - [@IvanVanderbyl](http://twitter.com/IvanVanderbyl) - [Blog](http://ivanvanderbyl.github.com/)
+[IvanVanderbyl](http://testpilot.me/ivan) - [Blog](http://ivanvanderbyl.github.com/)
 
 Copyright
 ---------
