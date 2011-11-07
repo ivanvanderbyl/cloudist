@@ -4,14 +4,14 @@
 # -*- encoding: utf-8 -*-
 
 Gem::Specification.new do |s|
-  s.name = %q{cloudist}
+  s.name = "cloudist"
   s.version = "0.4.3"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Ivan Vanderbyl"]
-  s.date = %q{2011-05-28}
-  s.description = %q{Cloudist is a simple, highly scalable job queue for Ruby applications, it can run within Rails, DaemonKit or your own custom application. Refer to github page for examples}
-  s.email = %q{ivanvanderbyl@me.com}
+  s.date = "2011-11-07"
+  s.description = "Cloudist is a simple, highly scalable job queue for Ruby applications, it can run within Rails, DaemonKit or your own custom application. Refer to github page for examples"
+  s.email = "ivanvanderbyl@me.com"
   s.extra_rdoc_files = [
     "LICENSE.txt",
     "README.md"
@@ -75,38 +75,17 @@ Gem::Specification.new do |s|
     "spec/spec_helper.rb",
     "spec/support/amqp.rb"
   ]
-  s.homepage = %q{http://github.com/ivanvanderbyl/cloudist}
+  s.homepage = "http://github.com/ivanvanderbyl/cloudist"
   s.licenses = ["MIT"]
   s.require_paths = ["lib"]
-  s.rubygems_version = %q{1.6.2}
-  s.summary = %q{Super fast job queue using AMQP}
-  s.test_files = [
-    "examples/amqp/amqp_consumer.rb",
-    "examples/amqp/amqp_publisher.rb",
-    "examples/queue_message.rb",
-    "examples/sandwich_client_with_custom_listener.rb",
-    "examples/sandwich_worker.rb",
-    "examples/sandwich_worker_with_class.rb",
-    "spec/cloudist/basic_queue_spec.rb",
-    "spec/cloudist/job_spec.rb",
-    "spec/cloudist/message_spec.rb",
-    "spec/cloudist/messaging_spec.rb",
-    "spec/cloudist/payload_spec.rb",
-    "spec/cloudist/payload_spec_2_spec.rb",
-    "spec/cloudist/queue_spec.rb",
-    "spec/cloudist/request_spec.rb",
-    "spec/cloudist/utils_spec.rb",
-    "spec/cloudist_spec.rb",
-    "spec/core_ext/string_spec.rb",
-    "spec/spec_helper.rb",
-    "spec/support/amqp.rb"
-  ]
+  s.rubygems_version = "1.8.10"
+  s.summary = "Super fast job queue using AMQP"
 
   if s.respond_to? :specification_version then
     s.specification_version = 3
 
     if Gem::Version.new(Gem::VERSION) >= Gem::Version.new('1.2.0') then
-      s.add_runtime_dependency(%q<amqp>, ["~> 0.8.0.rc12"])
+      s.add_runtime_dependency(%q<amqp>, ["~> 0.8.1"])
       s.add_runtime_dependency(%q<json>, ["~> 1.4.6"])
       s.add_runtime_dependency(%q<i18n>, [">= 0"])
       s.add_runtime_dependency(%q<activesupport>, ["~> 3.0.3"])
@@ -117,12 +96,12 @@ Gem::Specification.new do |s|
       s.add_development_dependency(%q<moqueue>, [">= 0"])
       s.add_development_dependency(%q<mocha>, [">= 0"])
       s.add_development_dependency(%q<bundler>, ["~> 1.0.0"])
-      s.add_development_dependency(%q<jeweler>, ["~> 1.5.2"])
+      s.add_development_dependency(%q<jeweler>, ["~> 1.6.4"])
       s.add_development_dependency(%q<rcov>, [">= 0"])
       s.add_development_dependency(%q<reek>, ["~> 1.2.8"])
       s.add_development_dependency(%q<roodi>, ["~> 2.1.0"])
     else
-      s.add_dependency(%q<amqp>, ["~> 0.8.0.rc12"])
+      s.add_dependency(%q<amqp>, ["~> 0.8.1"])
       s.add_dependency(%q<json>, ["~> 1.4.6"])
       s.add_dependency(%q<i18n>, [">= 0"])
       s.add_dependency(%q<activesupport>, ["~> 3.0.3"])
@@ -133,13 +112,13 @@ Gem::Specification.new do |s|
       s.add_dependency(%q<moqueue>, [">= 0"])
       s.add_dependency(%q<mocha>, [">= 0"])
       s.add_dependency(%q<bundler>, ["~> 1.0.0"])
-      s.add_dependency(%q<jeweler>, ["~> 1.5.2"])
+      s.add_dependency(%q<jeweler>, ["~> 1.6.4"])
       s.add_dependency(%q<rcov>, [">= 0"])
       s.add_dependency(%q<reek>, ["~> 1.2.8"])
       s.add_dependency(%q<roodi>, ["~> 2.1.0"])
     end
   else
-    s.add_dependency(%q<amqp>, ["~> 0.8.0.rc12"])
+    s.add_dependency(%q<amqp>, ["~> 0.8.1"])
     s.add_dependency(%q<json>, ["~> 1.4.6"])
     s.add_dependency(%q<i18n>, [">= 0"])
     s.add_dependency(%q<activesupport>, ["~> 3.0.3"])
@@ -150,7 +129,7 @@ Gem::Specification.new do |s|
     s.add_dependency(%q<moqueue>, [">= 0"])
     s.add_dependency(%q<mocha>, [">= 0"])
     s.add_dependency(%q<bundler>, ["~> 1.0.0"])
-    s.add_dependency(%q<jeweler>, ["~> 1.5.2"])
+    s.add_dependency(%q<jeweler>, ["~> 1.6.4"])
     s.add_dependency(%q<rcov>, [">= 0"])
     s.add_dependency(%q<reek>, ["~> 1.2.8"])
     s.add_dependency(%q<roodi>, ["~> 2.1.0"])
