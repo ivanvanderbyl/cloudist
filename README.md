@@ -11,11 +11,15 @@ or even just sending emails. Unlike other job queues (DelayedJob etc) Cloudist d
 Installation
 ------------
 
-    gem install cloudist
+```bash
+gem install cloudist
+```
 
 Or if your app has a Gemfile:
-    
-    gem 'cloudist'
+
+```ruby
+gem 'cloudist', '~> 0.4.4'
+```
 
 Usage
 -----
