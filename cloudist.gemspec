@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = "cloudist"
-  s.version = "0.4.3"
+  s.version = "0.4.4"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Ivan Vanderbyl"]
-  s.date = "2011-11-07"
+  s.date = "2011-11-08"
   s.description = "Cloudist is a simple, highly scalable job queue for Ruby applications, it can run within Rails, DaemonKit or your own custom application. Refer to github page for examples"
   s.email = "ivanvanderbyl@me.com"
   s.extra_rdoc_files = [
@@ -91,8 +91,8 @@ Gem::Specification.new do |s|
       s.add_runtime_dependency(%q<activesupport>, ["~> 3.0.3"])
       s.add_runtime_dependency(%q<hashie>, [">= 0"])
       s.add_runtime_dependency(%q<uuid>, [">= 0"])
-      s.add_development_dependency(%q<rake>, ["~> 0.8.7"])
-      s.add_development_dependency(%q<rspec>, ["~> 2.3.0"])
+      s.add_development_dependency(%q<rake>, ["~> 0.9.2"])
+      s.add_development_dependency(%q<rspec>, ["~> 2.4.0"])
       s.add_development_dependency(%q<moqueue>, [">= 0"])
       s.add_development_dependency(%q<mocha>, [">= 0"])
       s.add_development_dependency(%q<bundler>, ["~> 1.0.0"])
@@ -107,8 +107,8 @@ Gem::Specification.new do |s|
       s.add_dependency(%q<activesupport>, ["~> 3.0.3"])
       s.add_dependency(%q<hashie>, [">= 0"])
       s.add_dependency(%q<uuid>, [">= 0"])
-      s.add_dependency(%q<rake>, ["~> 0.8.7"])
-      s.add_dependency(%q<rspec>, ["~> 2.3.0"])
+      s.add_dependency(%q<rake>, ["~> 0.9.2"])
+      s.add_dependency(%q<rspec>, ["~> 2.4.0"])
       s.add_dependency(%q<moqueue>, [">= 0"])
       s.add_dependency(%q<mocha>, [">= 0"])
       s.add_dependency(%q<bundler>, ["~> 1.0.0"])
@@ -124,8 +124,8 @@ Gem::Specification.new do |s|
     s.add_dependency(%q<activesupport>, ["~> 3.0.3"])
     s.add_dependency(%q<hashie>, [">= 0"])
     s.add_dependency(%q<uuid>, [">= 0"])
-    s.add_dependency(%q<rake>, ["~> 0.8.7"])
-    s.add_dependency(%q<rspec>, ["~> 2.3.0"])
+    s.add_dependency(%q<rake>, ["~> 0.9.2"])
+    s.add_dependency(%q<rspec>, ["~> 2.4.0"])
     s.add_dependency(%q<moqueue>, [">= 0"])
     s.add_dependency(%q<mocha>, [">= 0"])
     s.add_dependency(%q<bundler>, ["~> 1.0.0"])
