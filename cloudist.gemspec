@@ -9,7 +9,7 @@ Gem::Specification.new do |s|
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Ivan Vanderbyl"]
-  s.date = "2011-11-08"
+  s.date = "2012-07-12"
   s.description = "Cloudist is a simple, highly scalable job queue for Ruby applications, it can run within Rails, DaemonKit or your own custom application. Refer to github page for examples"
   s.email = "ivanvanderbyl@me.com"
   s.extra_rdoc_files = [
@@ -78,7 +78,7 @@ Gem::Specification.new do |s|
   s.homepage = "http://github.com/ivanvanderbyl/cloudist"
   s.licenses = ["MIT"]
   s.require_paths = ["lib"]
-  s.rubygems_version = "1.8.10"
+  s.rubygems_version = "1.8.15"
   s.summary = "Super fast job queue using AMQP"
 
   if s.respond_to? :specification_version then
@@ -86,51 +86,39 @@ Gem::Specification.new do |s|
 
     if Gem::Version.new(Gem::VERSION) >= Gem::Version.new('1.2.0') then
       s.add_runtime_dependency(%q<amqp>, ["~> 0.8.1"])
-      s.add_runtime_dependency(%q<json>, ["~> 1.4.6"])
+      s.add_runtime_dependency(%q<json>, ["~> 1.4"])
       s.add_runtime_dependency(%q<i18n>, [">= 0"])
-      s.add_runtime_dependency(%q<activesupport>, ["~> 3.0.3"])
+      s.add_runtime_dependency(%q<activesupport>, ["> 3.0.0"])
       s.add_runtime_dependency(%q<hashie>, [">= 0"])
       s.add_runtime_dependency(%q<uuid>, [">= 0"])
-      s.add_development_dependency(%q<rake>, ["~> 0.9.2"])
       s.add_development_dependency(%q<rspec>, ["~> 2.4.0"])
       s.add_development_dependency(%q<moqueue>, [">= 0"])
-      s.add_development_dependency(%q<mocha>, [">= 0"])
-      s.add_development_dependency(%q<bundler>, ["~> 1.0.0"])
       s.add_development_dependency(%q<jeweler>, ["~> 1.6.4"])
-      s.add_development_dependency(%q<rcov>, [">= 0"])
       s.add_development_dependency(%q<reek>, ["~> 1.2.8"])
       s.add_development_dependency(%q<roodi>, ["~> 2.1.0"])
     else
       s.add_dependency(%q<amqp>, ["~> 0.8.1"])
-      s.add_dependency(%q<json>, ["~> 1.4.6"])
+      s.add_dependency(%q<json>, ["~> 1.4"])
       s.add_dependency(%q<i18n>, [">= 0"])
-      s.add_dependency(%q<activesupport>, ["~> 3.0.3"])
+      s.add_dependency(%q<activesupport>, ["> 3.0.0"])
       s.add_dependency(%q<hashie>, [">= 0"])
       s.add_dependency(%q<uuid>, [">= 0"])
-      s.add_dependency(%q<rake>, ["~> 0.9.2"])
       s.add_dependency(%q<rspec>, ["~> 2.4.0"])
       s.add_dependency(%q<moqueue>, [">= 0"])
-      s.add_dependency(%q<mocha>, [">= 0"])
-      s.add_dependency(%q<bundler>, ["~> 1.0.0"])
       s.add_dependency(%q<jeweler>, ["~> 1.6.4"])
-      s.add_dependency(%q<rcov>, [">= 0"])
       s.add_dependency(%q<reek>, ["~> 1.2.8"])
       s.add_dependency(%q<roodi>, ["~> 2.1.0"])
     end
   else
     s.add_dependency(%q<amqp>, ["~> 0.8.1"])
-    s.add_dependency(%q<json>, ["~> 1.4.6"])
+    s.add_dependency(%q<json>, ["~> 1.4"])
     s.add_dependency(%q<i18n>, [">= 0"])
-    s.add_dependency(%q<activesupport>, ["~> 3.0.3"])
+    s.add_dependency(%q<activesupport>, ["> 3.0.0"])
     s.add_dependency(%q<hashie>, [">= 0"])
     s.add_dependency(%q<uuid>, [">= 0"])
-    s.add_dependency(%q<rake>, ["~> 0.9.2"])
     s.add_dependency(%q<rspec>, ["~> 2.4.0"])
     s.add_dependency(%q<moqueue>, [">= 0"])
-    s.add_dependency(%q<mocha>, [">= 0"])
-    s.add_dependency(%q<bundler>, ["~> 1.0.0"])
     s.add_dependency(%q<jeweler>, ["~> 1.6.4"])
-    s.add_dependency(%q<rcov>, [">= 0"])
     s.add_dependency(%q<reek>, ["~> 1.2.8"])
     s.add_dependency(%q<roodi>, ["~> 2.1.0"])
   end
