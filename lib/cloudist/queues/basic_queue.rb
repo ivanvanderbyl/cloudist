@@ -33,7 +33,7 @@ module Cloudist
         return if @setup.eql?(true)
 
         @channel ||= AMQP::Channel.new(Cloudist.connection) do
-          channel.prefetch(self.prefetch, false) if self.prefetch.present?
+          channel.prefetch(self.prefetch, false) if self.prefetch
         end
 
         @queue = @channel.queue(queue_name, options)

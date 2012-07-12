@@ -19,7 +19,7 @@ module Cloudist
     end
 
     def find_or_create_id
-      if headers["message_id"].present?
+      if headers["message_id"]
         headers.message_id
       else
         UUID.generate

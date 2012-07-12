@@ -40,7 +40,7 @@ module Cloudist
 
       meth, *args = handle_key(key)
 
-      if meth.present? && self.respond_to?(meth)
+      if meth && self.respond_to?(meth)
         if method(meth).arity <= args.size
           call(meth, args.first(method(meth).arity))
         else
