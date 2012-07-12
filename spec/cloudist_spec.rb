@@ -6,8 +6,7 @@ describe "Cloudist" do
     stub_amqp!
   end
   it "should start an AMQP instance" do
-    AMQP.expects(:start).once
-    
+    AMQP.should_receive(:start).once
     Cloudist.start do
       
     end

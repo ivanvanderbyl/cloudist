@@ -3,8 +3,8 @@ require File.expand_path(File.dirname(__FILE__) + '../../spec_helper')
 describe Cloudist::Request do
   before {
     @mq_header = mock("MQ::Header")
-    @mq_header.stubs(:headers).returns({:published_on=>Time.now.to_i - 60, :event_hash=>"foo", :message_id=>"foo", :ttl=>300})
-    
+    @mq_header.stub(:headers).and_return({:published_on=>Time.now.to_i - 60, :event_hash=>"foo", :message_id=>"foo", :ttl=>300})
+
     q = Cloudist::JobQueue.new('test.queue')
 
     @request = Cloudist::Request.new(q, Marshal.dump({:bread => 'white'}), @mq_header)
