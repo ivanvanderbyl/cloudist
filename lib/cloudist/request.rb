@@ -1,7 +1,7 @@
 module Cloudist
   class Request
     include Cloudist::Encoding
-    
+
     attr_reader :queue_header, :qobj, :payload, :start, :headers, :body
 
     def initialize(queue, encoded_body, queue_header)
@@ -9,13 +9,13 @@ module Cloudist
 
       @body = decode(encoded_body)
       @headers = parse_custom_headers(queue_header)
-      
+
       @payload = Cloudist::Payload.new(encoded_body, queue_header.headers.dup)
       @headers = @payload.headers
 
       @start = Time.now.utc.to_f
     end
-    
+
     def parse_custom_headers(amqp_headers)
       h = amqp_headers.headers.dup
 
@@ -26,7 +26,7 @@ module Cloudist
 
       h
     end
-    
+
     def for_message
       [body.dup, queue_header.headers.dup]
     end
@@ -42,7 +42,7 @@ module Cloudist
     def mq
       qobj.channel
     end
-    
+
     def channel
       mq
     end

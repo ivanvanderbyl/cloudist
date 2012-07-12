@@ -3,23 +3,23 @@ module Cloudist
     def initialize(queue_name, options={})
       options[:auto_delete] = true
       options[:nowait] = false
-      
+
       @prefetch = Cloudist.listener_prefetch
-      
+
       super(queue_name, options)
     end
-    
+
     # def subscribe(&block)
     #   super do |request|
     #     yield request if block_given?
     #     teardown
     #   end
     # end
-    
+
     # def teardown
     #   queue.delete
     #   super
     # end
-    
+
   end
 end

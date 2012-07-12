@@ -3,7 +3,7 @@ require 'cloudist/core_ext/module'
 
 # Extracted from ActiveSupport 3.0
 class Class
-  
+
   # Taken from http://coderrr.wordpress.com/2008/04/10/lets-stop-polluting-the-threadcurrent-hash/
   def thread_local_accessor name, options = {}
     m = Module.new
@@ -28,8 +28,8 @@ class Class
       extend m
     end
   end
-  
-  
+
+
   # Declare a class-level attribute whose value is inheritable by subclasses.
   # Subclasses can change their own value and it will not impact parent class.
   #

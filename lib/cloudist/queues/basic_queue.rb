@@ -1,19 +1,19 @@
 module Cloudist
   class UnknownReplyTo < RuntimeError; end
   class ExpiredMessage < RuntimeError; end
-  
+
   module Queues
     class BasicQueue
       attr_reader :queue_name, :options
       attr_reader :queue, :exchange, :channel, :prefetch
-      
+
       alias :q :queue
       alias :ex :exchange
       alias :mq :channel
-      
+
       def initialize(queue_name, options = {})
         @prefetch ||= options.delete(:prefetch) || 1
-        
+
         options = {
           :auto_delete => true,
           :durable => false,
@@ -21,28 +21,28 @@ module Cloudist
         }.update(options)
 
         @queue_name, @options = queue_name, options
-        
+
         setup
       end
-      
+
       def inspect
         "<#{self.class.name} queue_name=#{queue_name}>"
       end
 
       def setup
         return if @setup.eql?(true)
-        
+
         @channel ||= AMQP::Channel.new(Cloudist.connection) do
           channel.prefetch(self.prefetch, false) if self.prefetch.present?
         end
-        
+
         @queue = @channel.queue(queue_name, options)
-        
+
         setup_exchange
-        
+
         @setup = true
       end
-      
+
       def setup_exchange
         @exchange = channel.direct("")
       end
@@ -61,13 +61,13 @@ module Cloudist
         s += " exchange=#{exchange.name}" if exchange
         s
       end
-      
+
       def subscribe(&block)
         queue.subscribe(:ack => true) do |queue_header, encoded_message|
           # next if Cloudist.closing?
 
           request = Cloudist::Request.new(self, encoded_message, queue_header)
-          
+
           handle_request = proc {
             begin
               raise Cloudist::ExpiredMessage if request.expired?
@@ -86,11 +86,11 @@ module Cloudist
               # log.debug("Finished Job in #{finished - request.start} seconds")
             end
           }
-          
+
           handle_ack = proc {
             request.ack
           }
-          
+
           EM.defer(handle_request, handle_ack)
         end
         log.info "AMQP Subscribed: #{tag}"
