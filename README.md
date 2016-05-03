@@ -1,4 +1,7 @@
-![Cloudist](https://github.com/ivanvanderbyl/cloudist/raw/master/doc/cloudist.png)
+
+**This was an experiment, it's no longer maintained. Go learn Elixir/Phoenix :)**
+
+___
 
 Cloudist
 ========
